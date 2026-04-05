@@ -4,7 +4,7 @@
 
 # InvestIQ
 
-### A self-contained investment toolkit for the modern web
+### A self-contained investment toolkit for the modern human
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-16c784?style=flat-square&logo=github)](https://yourusername.github.io/investiq)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
