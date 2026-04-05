@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-fun="false">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InvestIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   BASE TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --blue:       #1a6ef0;
+  --blue-dim:   rgba(26,110,240,0.12);
+  --blue-mid:   rgba(26,110,240,0.28);
+  --green:      #16c784;
+  --green-dim:  rgba(22,199,132,0.1);
+  --green-mid:  rgba(22,199,132,0.25);
+  --red:        #e5392b;
+  --red-dim:    rgba(229,57,43,0.1);
+  --amber:      #f59e0b;
+  --amber-dim:  rgba(245,158,11,0.12);
+  --purple:     #8b5cf6;
+  --purple-dim: rgba(139,92,246,0.12);
+  --radius:     6px;
+  --nav-h:      56px;
+}
+
+[data-theme="dark"] {
+  --bg:      #0e1219;
+  --surface: #141a24;
+  --surface2:#1a2132;
+  --surface3:#1f2840;
+  --border:  rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --text:    #dce4f0;
+  --text-2:  rgba(220,228,240,0.55);
+  --text-3:  rgba(220,228,240,0.28);
+  --shadow:  0 2px 16px rgba(0,0,0,0.4);
+}
+
+[data-theme="light"] {
+  --bg:      #f0f3f8;
+  --surface: #ffffff;
+  --surface2:#f5f7fb;
+  --surface3:#eaeff7;
+  --border:  rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.13);
+  --text:    #1a2132;
+  --text-2:  rgba(26,33,50,0.6);
+  --text-3:  rgba(26,33,50,0.35);
+  --shadow:  0 2px 12px rgba(0,0,0,0.08);
+}
+
+/* ═══════════════════════════════════════════
+   FUN MODE TOKENS
+═══════════════════════════════════════════ */
+[data-fun="true"] {
+  --bg:      #05050f;
+  --surface: #0c0c1a;
+  --surface2:#111128;
+  --surface3:#181835;
+  --border:  rgba(0,255,255,0.15);
+  --border2: rgba(0,255,255,0.3);
+  --text:    #e0ffe0;
+  --text-2:  rgba(0,255,200,0.7);
+  --text-3:  rgba(0,255,200,0.35);
+  --shadow:  0 0 30px rgba(0,255,255,0.15);
+  --blue:    #00e5ff;
+  --blue-dim:rgba(0,229,255,0.1);
+  --blue-mid:rgba(0,229,255,0.35);
+  --green:   #39ff14;
+  --green-dim:rgba(57,255,20,0.1);
+  --green-mid:rgba(57,255,20,0.3);
+  --red:     #ff006e;
+  --red-dim: rgba(255,0,110,0.12);
+  --amber:   #ffcc00;
+  --purple:  #bf00ff;
+  --purple-dim: rgba(191,0,255,0.12);
+  --radius:  2px;
+  cursor: crosshair;
+}
+
+/* ═══════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════ */
+@keyframes glitch {
+  0%,95%,100%{ text-shadow: none; transform: translate(0); }
+  96%{ text-shadow: -3px 0 #ff006e, 3px 0 #00e5ff; transform: translate(-2px,0); }
+  97%{ text-shadow: 3px 0 #ff006e, -3px 0 #00e5ff; transform: translate(2px,1px); }
+  98%{ text-shadow: -3px 0 #ff006e, 3px 0 #00e5ff; transform: translate(0,-1px); }
+}
+
+@keyframes neon-pulse {
+  0%,100%{ box-shadow: 0 0 5px var(--blue), 0 0 10px var(--blue); }
+  50%{ box-shadow: 0 0 12px var(--blue), 0 0 30px var(--blue), 0 0 50px var(--blue); }
+}
+
+@keyframes rainbow-border {
+  0%  { border-color: #ff006e; }
+  16% { border-color: #ff8c00; }
+  33% { border-color: #ffe600; }
+  50% { border-color: #39ff14; }
+  67% { border-color: #00e5ff; }
+  83% { border-color: #bf00ff; }
+  100%{ border-color: #ff006e; }
+}
+
+@keyframes float {
+  0%,100%{ transform: translateY(0px); }
+  50%{ transform: translateY(-6px); }
+}
+
+@keyframes bounce-in {
+  0%{ transform: scale(0.9); opacity:0; }
+  60%{ transform: scale(1.04); }
+  100%{ transform: scale(1); opacity:1; }
+}
+
+@keyframes scan {
+  0%{ transform: translateY(-100%); }
+  100%{ transform: translateY(100vh); }
+}
+
+@keyframes spin-slow {
+  from{ transform: rotate(0deg); }
+  to{ transform: rotate(360deg); }
+}
+
+@keyframes text-flicker {
+  0%,19%,21%,23%,25%,54%,56%,100%{ opacity:1; }
+  20%,24%,55%{ opacity:0.4; }
+}
+
+@keyframes ticker-scroll {
+  0%{ transform: translateX(100%); }
+  100%{ transform: translateX(-100%); }
+}
+
+@keyframes shimmer {
+  0%{ background-position: -200% center; }
+  100%{ background-position: 200% center; }
+}
+
+@keyframes wiggle {
+  0%,100%{ transform: rotate(0deg); }
+  25%{ transform: rotate(-5deg) scale(1.1); }
+  75%{ transform: rotate(5deg) scale(1.1); }
+}
+
+@keyframes matrix-fall {
+  0%{ opacity:1; transform: translateY(0); }
+  100%{ opacity:0; transform: translateY(40px); }
+}
+
+/* ═══════════════════════════════════════════
+   GLOBAL
+═══════════════════════════════════════════ */
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html,body{ height:100%; }
+
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ─── FUN MODE: background grid + scanline ─── */
+[data-fun="true"] body {
+  background-image:
+    linear-gradient(rgba(0,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-attachment: fixed;
+}
+
+[data-fun="true"] body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.08) 3px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none; z-index: 9999;
+}
+
+[data-fun="true"] * { font-family: 'JetBrains Mono', monospace !important; }
+[data-fun="true"] h1,[data-fun="true"] h2,[data-fun="true"] .fun-heading {
+  font-family: 'Orbitron', sans-serif !important;
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+.nav {
+  position: sticky; top:0; z-index:100;
+  height: var(--nav-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center;
+  padding: 0 20px; gap:0;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+}
+
+[data-fun="true"] .nav {
+  border-bottom: 1px solid var(--border2);
+  animation: neon-pulse 3s ease-in-out infinite;
+  background: rgba(5,5,15,0.97);
+}
+
+.nav-brand {
+  display:flex; align-items:center; gap:10px;
+  margin-right:24px; text-decoration:none;
+  flex-shrink:0;
+}
+
+.nav-icon {
+  width:30px; height:30px; background:var(--blue);
+  border-radius:7px; display:flex; align-items:center; justify-content:center;
+  transition: all 0.3s;
+}
+
+[data-fun="true"] .nav-icon {
+  border-radius:0;
+  box-shadow: 0 0 10px var(--blue), 0 0 20px var(--blue);
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.nav-icon svg{ width:16px; height:16px; fill:#fff; }
+.nav-brand-name{ font-size:15px; font-weight:600; color:var(--text); letter-spacing:-0.01em; }
+
+[data-fun="true"] .nav-brand-name {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 13px;
+  color: var(--blue);
+  text-shadow: 0 0 8px var(--blue);
+  letter-spacing: 0.05em;
+  animation: glitch 4s infinite, text-flicker 6s infinite;
+}
+
+.nav-menu{ display:flex; align-items:center; gap:2px; flex:1; }
+.nav-item{ position:relative; }
+
+.nav-btn {
+  display:flex; align-items:center; gap:5px;
+  padding:7px 13px;
+  background:transparent; border:none;
+  font-family:'Figtree',sans-serif; font-size:13px; font-weight:500;
+  color:var(--text-2); cursor:pointer; border-radius:var(--radius);
+  transition:all 0.15s; white-space:nowrap;
+}
+
+.nav-btn:hover,.nav-btn.active{ color:var(--text); background:var(--surface2); }
+.nav-btn.active{ color:var(--blue); }
+.nav-btn svg{ width:12px; height:12px; transition:transform 0.2s; }
+.nav-btn.open svg{ transform:rotate(180deg); }
+
+[data-fun="true"] .nav-btn {
+  border: 1px solid transparent;
+  letter-spacing: 0.05em;
+  font-size: 11px;
+}
+[data-fun="true"] .nav-btn:hover,
+[data-fun="true"] .nav-btn.active {
+  background: var(--blue-dim);
+  border-color: var(--border2);
+  color: var(--blue);
+  text-shadow: 0 0 8px var(--blue);
+}
+
+.dropdown {
+  position:absolute; top:calc(100% + 8px); left:0;
+  min-width:220px; background:var(--surface);
+  border:1px solid var(--border2); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden;
+  opacity:0; pointer-events:none;
+  transform:translateY(-6px); transition:all 0.18s;
+}
+.dropdown.open{ opacity:1; pointer-events:all; transform:translateY(0); }
+
+[data-fun="true"] .dropdown {
+  border-color: var(--blue-mid);
+  box-shadow: 0 0 20px rgba(0,229,255,0.2);
+  animation: bounce-in 0.2s ease-out;
+}
+
+.dropdown-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; cursor:pointer;
+  transition:background 0.12s;
+  border-bottom:1px solid var(--border);
+}
+.dropdown-item:last-child{ border-bottom:none; }
+.dropdown-item:hover{ background:var(--surface2); }
+.dropdown-item.active{ background:var(--blue-dim); }
+
+.di-icon{ width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.di-label{ font-size:13px; font-weight:500; color:var(--text); }
+.di-sub  { font-size:11px; color:var(--text-3); margin-top:1px; }
+
+.nav-right{ margin-left:auto; display:flex; align-items:center; gap:6px; }
+
+.icon-btn {
+  width:34px; height:34px; border-radius:var(--radius);
+  background:var(--surface2); border:1px solid var(--border2);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; color:var(--text-2); font-size:16px;
+}
+.icon-btn:hover{ color:var(--text); background:var(--surface3); }
+.icon-btn svg{ width:16px; height:16px; }
+
+[data-fun="true"] .icon-btn {
+  border-radius:0; border-color:var(--border2);
+  box-shadow: 0 0 6px rgba(0,229,255,0.3);
+}
+
+.fun-toggle-btn {
+  position:relative; overflow:visible;
+  font-size:18px; line-height:1;
+}
+
+.fun-toggle-btn.fun-on {
+  animation: wiggle 0.5s ease-in-out infinite;
+  background: rgba(57,255,20,0.1);
+  border-color: var(--green);
+  box-shadow: 0 0 10px var(--green), 0 0 20px var(--green);
+}
+
+/* ═══════════════════════════════════════════
+   FUN TICKER TAPE
+═══════════════════════════════════════════ */
+.fun-tape {
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  height: 28px; overflow: hidden;
+  display: flex; align-items: center;
+}
+
+.fun-tape-inner {
+  display: flex; gap: 60px;
+  animation: ticker-scroll 25s linear infinite;
+  white-space: nowrap;
+  font-size: 10px; letter-spacing: 0.08em;
+  color: var(--blue);
+}
+
+.fun-tape-item { display: inline-flex; align-items: center; gap: 8px; }
+.fun-tape-up   { color: var(--green); }
+.fun-tape-down { color: var(--red); }
+
+/* ═══════════════════════════════════════════
+   PAGE + PANELS
+═══════════════════════════════════════════ */
+.page{ max-width:1060px; margin:0 auto; padding:32px 20px 80px; }
+
+[data-fun="true"] .page { padding-top: 24px; }
+
+.panel {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  transition: all 0.3s;
+}
+
+[data-fun="true"] .panel {
+  border-color: var(--blue-mid);
+  box-shadow: inset 0 0 20px rgba(0,229,255,0.03), 0 0 15px rgba(0,229,255,0.1);
+  animation: neon-pulse 4s ease-in-out infinite;
+}
+
+[data-fun="true"] .panel:hover {
+  box-shadow: inset 0 0 30px rgba(0,229,255,0.06), 0 0 30px rgba(0,229,255,0.2);
+}
+
+.panel-head{ display:flex; align-items:center; gap:6px; margin-bottom:20px; }
+.panel-dot { width:6px; height:6px; border-radius:50%; background:var(--blue); }
+
+[data-fun="true"] .panel-dot {
+  box-shadow: 0 0 6px var(--blue), 0 0 12px var(--blue);
+  animation: text-flicker 2s infinite;
+}
+
+.panel-label{
+  font-size:11px; font-weight:500;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-2);
+}
+
+[data-fun="true"] .panel-label {
+  color: var(--blue);
+  text-shadow: 0 0 6px var(--blue);
+  letter-spacing: 0.15em;
+}
+
+/* ═══════════════════════════════════════════
+   CALC CONTROLS
+═══════════════════════════════════════════ */
+.calc-grid {
+  display:grid; grid-template-columns:340px 1fr;
+  gap:10px; margin-bottom:10px;
+}
+@media(max-width:740px){ .calc-grid{ grid-template-columns:1fr; } }
+
+.ctrl{ margin-bottom:18px; }
+.ctrl:last-child{ margin-bottom:0; }
+.ctrl-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.ctrl-name{ font-size:12px; color:var(--text-2); }
+
+[data-fun="true"] .ctrl-name {
+  color: var(--text-2);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.ctrl-val{
+  font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:500;
+  color:var(--blue); background:var(--blue-dim); border:1px solid var(--blue-mid);
+  border-radius:4px; padding:2px 8px;
+}
+
+[data-fun="true"] .ctrl-val {
+  color: var(--green);
+  background: var(--green-dim);
+  border-color: var(--green-mid);
+  text-shadow: 0 0 6px var(--green);
+  border-radius: 0;
+  animation: text-flicker 4s infinite;
+}
+
+input[type="range"]{
+  -webkit-appearance:none; width:100%; height:3px;
+  border-radius:2px; background:var(--surface3); outline:none; cursor:pointer;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:16px; height:16px;
+  border-radius:50%; background:var(--blue); border:2.5px solid var(--bg);
+  cursor:pointer; transition:transform 0.12s;
+}
+input[type="range"]::-webkit-slider-thumb:hover{ transform:scale(1.15); }
+input[type="range"]::-moz-range-thumb{
+  width:16px; height:16px; border-radius:50%;
+  background:var(--blue); border:2.5px solid var(--bg); cursor:pointer;
+}
+
+[data-fun="true"] input[type="range"]{
+  height:2px; background:rgba(0,229,255,0.2);
+}
+[data-fun="true"] input[type="range"]::-webkit-slider-thumb{
+  background:var(--green); border-radius:0; width:12px; height:20px;
+  box-shadow: 0 0 8px var(--green), 0 0 15px var(--green);
+  border-color: var(--bg);
+}
+
+.freq{ display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-top:8px; }
+.freq-btn{
+  padding:7px 4px; background:var(--surface2); border:1px solid var(--border);
+  border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:10px;
+  color:var(--text-2); cursor:pointer; text-align:center; transition:all 0.12s;
+}
+.freq-btn.active{ background:var(--blue-dim); border-color:var(--blue-mid); color:var(--blue); }
+.freq-btn:hover:not(.active){ background:var(--surface3); color:var(--text); }
+
+[data-fun="true"] .freq-btn {
+  border-radius:0; letter-spacing:0.05em;
+}
+[data-fun="true"] .freq-btn.active {
+  background:var(--green-dim); border-color:var(--green-mid); color:var(--green);
+  text-shadow:0 0 6px var(--green);
+  box-shadow:inset 0 0 8px rgba(57,255,20,0.1);
+}
+
+.seg{
+  display:flex; background:var(--surface2); border:1px solid var(--border2);
+  border-radius:var(--radius); overflow:hidden;
+}
+.seg-btn{
+  padding:6px 14px; background:transparent; border:none;
+  font-family:'JetBrains Mono',monospace; font-size:12px;
+  color:var(--text-2); cursor:pointer; transition:all 0.15s;
+}
+.seg-btn.active{ background:var(--blue); color:#fff; font-weight:500; }
+.seg-btn:hover:not(.active){ color:var(--text); background:var(--surface3); }
+
+[data-fun="true"] .seg{ border-radius:0; border-color:var(--border2); }
+[data-fun="true"] .seg-btn.active{
+  background:var(--blue);
+  box-shadow:0 0 10px var(--blue);
+}
+
+/* ═══════════════════════════════════════════
+   STATS
+═══════════════════════════════════════════ */
+.stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.stat{
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:12px;
+  transition:all 0.3s;
+}
+.stat.accent{ border-color:var(--green-mid); background:var(--green-dim); }
+
+[data-fun="true"] .stat {
+  border-radius:0; border-color:var(--blue-mid);
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+[data-fun="true"] .stat:nth-child(2){ animation-delay:0.5s; }
+[data-fun="true"] .stat:nth-child(3){ animation-delay:1s; }
+
+[data-fun="true"] .stat.accent {
+  border-color:var(--green);
+  box-shadow:0 0 10px var(--green-dim), inset 0 0 15px rgba(57,255,20,0.05);
+  animation:none;
+}
+
+.stat-label{
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--text-3); margin-bottom:6px;
+}
+.stat.accent .stat-label{ color:rgba(22,199,132,0.6); }
+
+[data-fun="true"] .stat-label { color:var(--blue-mid); }
+[data-fun="true"] .stat.accent .stat-label { color:rgba(57,255,20,0.5); }
+
+.stat-val{
+  font-family:'JetBrains Mono',monospace; font-size:clamp(13px,2vw,17px);
+  font-weight:500; color:var(--text); line-height:1;
+}
+.stat.accent .stat-val{ color:var(--green); }
+
+[data-fun="true"] .stat-val { color:var(--blue); text-shadow:0 0 8px var(--blue); }
+[data-fun="true"] .stat.accent .stat-val { color:var(--green); text-shadow:0 0 8px var(--green); }
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker{
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  margin-bottom:12px; padding:9px 13px;
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+.ticker-item{ display:flex; align-items:center; gap:5px; }
+.ticker-key{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.07em; color:var(--text-3); text-transform:uppercase; }
+.ticker-val{ font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:500; }
+.ticker-val.up{ color:var(--green); }
+.ticker-val.neu{ color:var(--text-2); }
+.ticker-sep{ width:1px; height:14px; background:var(--border2); }
+
+[data-fun="true"] .ticker {
+  border-radius:0; border-color:var(--border2);
+  background:rgba(0,229,255,0.03);
+}
+[data-fun="true"] .ticker-val.up{ text-shadow:0 0 6px var(--green); }
+[data-fun="true"] .ticker-key{ color:rgba(0,229,255,0.4); }
+
+/* ═══════════════════════════════════════════
+   CHART
+═══════════════════════════════════════════ */
+.legend{ display:flex; gap:14px; margin-bottom:10px; }
+.legend-item{ display:flex; align-items:center; gap:5px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-3); }
+.legend-sq{ width:9px; height:9px; border-radius:2px; flex-shrink:0; }
+
+.chart-wrap{ position:relative; width:100%; height:190px; }
+
+[data-fun="true"] .chart-wrap {
+  border:1px solid rgba(0,229,255,0.15);
+  padding:4px;
+  box-shadow:inset 0 0 20px rgba(0,229,255,0.05);
+}
+
+/* ═══════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════ */
+.table-panel{
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden; margin-bottom:10px;
+}
+.table-top{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 18px; border-bottom:1px solid var(--border);
+}
+.table-title{ font-size:11px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-2); }
+.table-badge{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-3); }
+.table-scroll{ max-height:280px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--surface3) transparent; }
+
+[data-fun="true"] .table-panel{
+  border-color:var(--border2);
+  box-shadow:0 0 20px rgba(57,255,20,0.05);
+}
+[data-fun="true"] .table-title{ color:var(--green); text-shadow:0 0 6px var(--green); }
+
+table{ width:100%; border-collapse:collapse; }
+thead th{
+  padding:8px 18px; font-family:'JetBrains Mono',monospace; font-size:9px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3);
+  text-align:right; background:var(--surface); border-bottom:1px solid var(--border);
+  position:sticky; top:0;
+}
+thead th:first-child{ text-align:left; }
+tbody tr{ border-bottom:1px solid var(--border); transition:background 0.1s; }
+tbody tr:hover{ background:var(--surface3); }
+tbody tr:last-child{ border-bottom:none; }
+tbody tr:nth-child(5n){ background:var(--surface2); }
+tbody tr:nth-child(5n):hover{ background:var(--surface3); }
+tbody td{ padding:8px 18px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-2); text-align:right; }
+tbody td:first-child{ text-align:left; color:var(--text-3); font-size:10px; }
+tbody td.up{ color:var(--green); }
+tbody td.tot{ color:var(--text); font-weight:500; }
+
+[data-fun="true"] thead th{ color:rgba(0,229,255,0.5); }
+[data-fun="true"] tbody td.up{ color:var(--green); text-shadow:0 0 4px var(--green); }
+[data-fun="true"] tbody td.tot{ color:var(--blue); }
+[data-fun="true"] tbody tr:hover{ background:rgba(0,229,255,0.04); }
+
+/* ═══════════════════════════════════════════
+   EDUCATION PAGE
+═══════════════════════════════════════════ */
+.edu-hero{
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:36px 32px;
+  margin-bottom:20px; position:relative; overflow:hidden;
+}
+
+.edu-hero::before{
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:200px; height:200px; border-radius:50%;
+  background:var(--blue-dim); pointer-events:none;
+}
+
+[data-fun="true"] .edu-hero {
+  border-color:var(--blue-mid);
+  box-shadow:inset 0 0 40px rgba(0,229,255,0.04), 0 0 20px rgba(0,229,255,0.1);
+}
+
+[data-fun="true"] .edu-hero::before {
+  width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(circle, rgba(191,0,255,0.1) 0%, transparent 70%);
+  animation:spin-slow 15s linear infinite;
+}
+
+.edu-hero-tag{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--blue); background:var(--blue-dim); border:1px solid var(--blue-mid);
+  border-radius:4px; padding:3px 9px; margin-bottom:14px;
+}
+.edu-hero h1{ font-size:clamp(22px,4vw,32px); font-weight:600; letter-spacing:-0.02em; color:var(--text); margin-bottom:10px; }
+.edu-hero p{ font-size:14px; color:var(--text-2); max-width:560px; line-height:1.7; }
+
+[data-fun="true"] .edu-hero h1 {
+  font-family:'Orbitron',sans-serif !important;
+  font-size:clamp(16px,3.5vw,26px);
+  background:linear-gradient(90deg, #00e5ff, #bf00ff, #39ff14, #00e5ff);
+  background-size:300% auto;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation:shimmer 3s linear infinite;
+  letter-spacing:0.02em;
+}
+
+.level-tabs{ display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+.level-tab{
+  padding:6px 14px; border-radius:20px;
+  background:var(--surface); border:1px solid var(--border2);
+  font-size:12px; font-weight:500; cursor:pointer;
+  color:var(--text-2); transition:all 0.15s;
+}
+.level-tab:hover{ color:var(--text); }
+.level-tab.active-l100{ background:var(--blue-dim);   border-color:var(--blue-mid);               color:var(--blue);   }
+.level-tab.active-l200{ background:var(--green-dim);  border-color:var(--green-mid);              color:var(--green);  }
+.level-tab.active-l300{ background:var(--amber-dim);  border-color:rgba(245,158,11,0.3);          color:var(--amber);  }
+.level-tab.active-l400{ background:var(--purple-dim); border-color:rgba(139,92,246,0.3);          color:var(--purple); }
+.level-tab.active-all { background:var(--surface3);   border-color:var(--border2);                color:var(--text);   }
+
+[data-fun="true"] .level-tab { border-radius:0; font-size:10px; letter-spacing:0.05em; }
+[data-fun="true"] .level-tab.active-l100 { box-shadow:0 0 10px rgba(0,229,255,0.3); }
+[data-fun="true"] .level-tab.active-l200 { box-shadow:0 0 10px rgba(57,255,20,0.3); }
+[data-fun="true"] .level-tab.active-l300 { box-shadow:0 0 10px rgba(255,204,0,0.3); }
+[data-fun="true"] .level-tab.active-l400 { box-shadow:0 0 10px rgba(191,0,255,0.3); }
+
+/* ─── Cards ─── */
+.cards-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px;
+}
+
+.edu-card{
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+  cursor:pointer; transition:border-color 0.15s, transform 0.15s;
+}
+.edu-card:hover{ border-color:var(--border2); transform:translateY(-2px); }
+
+[data-fun="true"] .edu-card {
+  border-color:var(--border2);
+  transition:all 0.2s;
+}
+[data-fun="true"] .edu-card:hover {
+  transform:translateY(-4px) scale(1.01);
+  animation:rainbow-border 1s linear infinite;
+  box-shadow:0 8px 30px rgba(0,229,255,0.2);
+}
+
+.edu-card-head{
+  padding:16px 18px 14px; border-bottom:1px solid var(--border);
+  display:flex; align-items:flex-start; gap:12px;
+}
+
+.card-icon{ width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+.card-meta{ flex:1; }
+.card-level{
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em;
+  text-transform:uppercase; border-radius:3px; padding:2px 6px; margin-bottom:5px; display:inline-block;
+}
+.l100{ background:var(--blue-dim);   color:var(--blue);   border:1px solid var(--blue-mid); }
+.l200{ background:var(--green-dim);  color:var(--green);  border:1px solid var(--green-mid); }
+.l300{ background:var(--amber-dim);  color:var(--amber);  border:1px solid rgba(245,158,11,0.3); }
+.l400{ background:var(--purple-dim); color:var(--purple); border:1px solid rgba(139,92,246,0.3); }
+
+[data-fun="true"] .card-level{ border-radius:0; }
+[data-fun="true"] .l100{ text-shadow:0 0 6px var(--blue); }
+[data-fun="true"] .l200{ text-shadow:0 0 6px var(--green); }
+[data-fun="true"] .l400{ text-shadow:0 0 6px var(--purple); }
+
+.card-title{ font-size:14px; font-weight:600; color:var(--text); }
+.card-sub  { font-size:11px; color:var(--text-3); margin-top:2px; }
+.edu-card-body{ padding:14px 18px; }
+.edu-card-body p{ font-size:13px; color:var(--text-2); line-height:1.65; }
+.key-points{ margin-top:12px; }
+.kp{ display:flex; align-items:flex-start; gap:8px; margin-bottom:7px; font-size:12px; color:var(--text-2); }
+.kp-dot{ width:5px; height:5px; border-radius:50%; margin-top:6px; flex-shrink:0; }
+
+[data-fun="true"] .kp-dot { box-shadow:0 0 4px currentColor; }
+
+.warn-box{
+  margin-top:12px; padding:10px 12px;
+  background:var(--red-dim); border:1px solid rgba(229,57,43,0.2);
+  border-radius:4px; font-size:12px; color:var(--red);
+  display:flex; gap:8px; align-items:flex-start;
+}
+.warn-icon{ flex-shrink:0; font-size:13px; margin-top:1px; }
+
+/* ─── Modal ─── */
+.modal-overlay{
+  position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.6);
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:60px 20px 40px; overflow-y:auto;
+}
+.modal{
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:10px; width:100%; max-width:680px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  animation:bounce-in 0.2s ease-out;
+}
+
+[data-fun="true"] .modal {
+  border-color:var(--blue-mid); border-radius:0;
+  box-shadow:0 0 40px rgba(0,229,255,0.3);
+}
+
+.modal-head{
+  padding:20px 24px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
+}
+.modal-close{
+  margin-left:auto; width:30px; height:30px; border-radius:6px;
+  background:var(--surface2); border:1px solid var(--border);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  color:var(--text-2); font-size:16px; line-height:1; transition:all 0.12s;
+}
+.modal-close:hover{ background:var(--surface3); color:var(--text); }
+
+[data-fun="true"] .modal-close{ border-radius:0; }
+
+.modal-body{ padding:24px; }
+.modal-body h3{ font-size:15px; font-weight:600; color:var(--text); margin:20px 0 8px; }
+.modal-body h3:first-child{ margin-top:0; }
+.modal-body p{ font-size:13px; color:var(--text-2); line-height:1.75; margin-bottom:12px; }
+.modal-body ul{ padding-left:18px; margin-bottom:12px; }
+.modal-body ul li{ font-size:13px; color:var(--text-2); line-height:1.7; margin-bottom:4px; }
+
+[data-fun="true"] .modal-body h3 {
+  color:var(--blue); text-shadow:0 0 6px var(--blue); font-size:13px;
+  letter-spacing:0.05em; text-transform:uppercase;
+}
+
+.example-box{
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:6px; padding:14px 16px; margin:12px 0;
+  font-size:13px; color:var(--text-2); line-height:1.7;
+}
+.example-box strong{ color:var(--text); font-weight:500; }
+
+[data-fun="true"] .example-box {
+  border-color:var(--green-mid); border-radius:0;
+  background:rgba(57,255,20,0.04);
+  box-shadow:inset 0 0 10px rgba(57,255,20,0.04);
+}
+
+/* ═══════════════════════════════════════════
+   FLOATING FUN ELEMENTS
+═══════════════════════════════════════════ */
+.floater {
+  position:fixed; pointer-events:none; z-index:50;
+  font-size:22px; user-select:none;
+  animation:float 3s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer-bar{
+  margin-top:20px; padding-top:16px; border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.footer-note{ font-size:11px; color:var(--text-3); line-height:1.6; }
+.footer-note strong{ color:var(--red); font-weight:500; }
+.footer-brand{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-3); }
+.footer-brand span{ color:var(--blue); }
+
+[data-fun="true"] .footer-brand span{ text-shadow:0 0 6px var(--blue); }
+
+/* ═══════════════════════════════════════════
+   NEW TOOLS — SHARED
+═══════════════════════════════════════════ */
+.tool-hero{
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:24px 28px; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+}
+.tool-hero-left{}
+.tool-hero-tag{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--blue); background:var(--blue-dim); border:1px solid var(--blue-mid);
+  border-radius:4px; padding:3px 9px; margin-bottom:10px;
+}
+.tool-hero h2{ font-size:clamp(17px,3vw,22px); font-weight:600; letter-spacing:-0.02em; color:var(--text); margin-bottom:4px; }
+.tool-hero p{ font-size:13px; color:var(--text-2); line-height:1.6; max-width:520px; }
+
+[data-fun="true"] .tool-hero{ border-color:var(--blue-mid); box-shadow:0 0 20px rgba(0,229,255,0.08); }
+[data-fun="true"] .tool-hero h2{ font-family:'Orbitron',sans-serif!important; font-size:clamp(13px,2.5vw,18px); color:var(--blue); text-shadow:0 0 8px var(--blue); }
+
+.two-col{ display:grid; grid-template-columns:340px 1fr; gap:10px; margin-bottom:10px; }
+@media(max-width:740px){ .two-col{ grid-template-columns:1fr; } }
+.three-col{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
+@media(max-width:600px){ .three-col{ grid-template-columns:1fr; } }
+.four-col{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px; }
+@media(max-width:680px){ .four-col{ grid-template-columns:repeat(2,1fr); } }
+
+.sub-label{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); margin-bottom:6px; }
+.big-num{ font-family:'JetBrains Mono',monospace; font-size:clamp(16px,2.5vw,22px); font-weight:500; line-height:1; color:var(--text); }
+.big-num.green{ color:var(--green); }
+.big-num.amber{ color:var(--amber); }
+.big-num.red  { color:var(--red); }
+
+[data-fun="true"] .big-num.green{ text-shadow:0 0 8px var(--green); }
+
+/* ─── Tab strip ─── */
+.tab-strip{ display:flex; gap:0; margin-bottom:10px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.tab-strip-btn{
+  flex:1; padding:10px 16px; background:transparent; border:none;
+  font-family:'Figtree',sans-serif; font-size:12px; font-weight:500;
+  color:var(--text-2); cursor:pointer; transition:all 0.15s;
+  border-right:1px solid var(--border);
+}
+.tab-strip-btn:last-child{ border-right:none; }
+.tab-strip-btn.active{ background:var(--blue-dim); color:var(--blue); }
+.tab-strip-btn:hover:not(.active){ background:var(--surface3); color:var(--text); }
+
+[data-fun="true"] .tab-strip-btn.active{ background:var(--blue-dim); color:var(--blue); text-shadow:0 0 6px var(--blue); border-radius:0; }
+
+/* ─── Portfolio page ─── */
+.holding-row{
+  display:flex; align-items:center; gap:6px; padding:8px 0;
+  border-bottom:1px solid var(--border); font-size:12px;
+}
+.holding-row:last-child{ border-bottom:none; }
+.holding-name{ flex:1; font-weight:500; color:var(--text); font-size:13px; }
+.holding-value{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--blue); width:90px; text-align:right; }
+.holding-cat{
+  font-size:10px; padding:2px 6px; border-radius:3px;
+  background:var(--surface3); color:var(--text-3);
+  white-space:nowrap; width:72px; text-align:center;
+}
+.holding-del{
+  width:22px; height:22px; border-radius:4px; border:none;
+  background:var(--red-dim); color:var(--red);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:13px; transition:all 0.12s; flex-shrink:0;
+}
+.holding-del:hover{ background:var(--red); color:#fff; }
+
+.add-row{ display:flex; gap:6px; margin-top:12px; flex-wrap:wrap; }
+.add-row input, .add-row select{
+  background:var(--surface2); border:1px solid var(--border2);
+  color:var(--text); border-radius:4px; padding:6px 8px;
+  font-family:'Figtree',sans-serif; font-size:12px;
+  transition:border-color 0.12s;
+}
+.add-row input:focus,.add-row select:focus{ outline:none; border-color:var(--blue); }
+.add-row input[type=text]{ flex:1; min-width:80px; }
+.add-row input[type=number]{ width:90px; }
+.add-row select{ min-width:90px; }
+.add-row option{ background:var(--surface); }
+
+[data-fun="true"] .add-row input,[data-fun="true"] .add-row select{ border-radius:0; border-color:var(--border2); }
+[data-fun="true"] .add-row input:focus,[data-fun="true"] .add-row select:focus{ border-color:var(--blue); box-shadow:0 0 6px rgba(0,229,255,0.3); }
+
+.add-btn{
+  padding:6px 14px; background:var(--blue); border:none; border-radius:4px;
+  font-family:'Figtree',sans-serif; font-size:12px; font-weight:500;
+  color:#fff; cursor:pointer; transition:all 0.15s; white-space:nowrap;
+}
+.add-btn:hover{ opacity:0.88; }
+[data-fun="true"] .add-btn{ border-radius:0; box-shadow:0 0 8px rgba(0,229,255,0.4); }
+
+.chart-wrap-sq{ position:relative; width:100%; height:240px; }
+.chart-wrap-lg{ position:relative; width:100%; height:280px; }
+
+.health-item{
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px; border-radius:4px; margin-bottom:6px;
+  border:1px solid var(--border); background:var(--surface2);
+  font-size:12px;
+}
+.health-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.health-label{ flex:1; color:var(--text-2); }
+.health-pct{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; }
+.health-bar-track{ flex:1; height:4px; background:var(--surface3); border-radius:2px; overflow:hidden; min-width:60px; }
+.health-bar-fill{ height:100%; border-radius:2px; transition:width 0.4s ease; }
+
+/* ─── Monte Carlo ─── */
+.mc-stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px; }
+@media(max-width:640px){ .mc-stats-grid{ grid-template-columns:repeat(2,1fr); } }
+
+.prob-circle{
+  width:72px; height:72px; border-radius:50%;
+  border:3px solid var(--green);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:500;
+  color:var(--green); margin:0 auto 8px;
+  transition:all 0.3s;
+}
+[data-fun="true"] .prob-circle{ box-shadow:0 0 12px var(--green), 0 0 24px var(--green); border-color:var(--green); }
+
+.pct-table{ width:100%; border-collapse:collapse; font-size:12px; }
+.pct-table td{ padding:7px 14px; border-bottom:1px solid var(--border); }
+.pct-table td:first-child{ color:var(--text-3); font-family:'JetBrains Mono',monospace; font-size:10px; }
+.pct-table td:last-child{ text-align:right; font-family:'JetBrains Mono',monospace; color:var(--text); font-weight:500; }
+
+/* ─── Fee / Tax ─── */
+.fee-card{
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px 16px; text-align:center;
+  transition:all 0.2s;
+}
+.fee-card.best{ border-color:var(--green-mid); background:var(--green-dim); }
+.fee-card.worst{ border-color:rgba(229,57,43,0.25); background:var(--red-dim); }
+.fee-card-name{ font-size:11px; font-weight:500; color:var(--text-2); margin-bottom:4px; }
+.fee-card-pct{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-3); margin-bottom:10px; }
+.fee-card-val{ font-family:'JetBrains Mono',monospace; font-size:clamp(14px,2vw,18px); font-weight:500; color:var(--text); line-height:1; }
+.fee-card.best .fee-card-val{ color:var(--green); }
+.fee-card.worst .fee-card-val{ color:var(--red); }
+.fee-card-loss{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-3); margin-top:4px; }
+.fee-card.worst .fee-card-loss{ color:var(--red); }
+[data-fun="true"] .fee-card.best{ box-shadow:0 0 10px rgba(57,255,20,0.2); }
+[data-fun="true"] .fee-card.worst{ box-shadow:0 0 10px rgba(255,0,110,0.15); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ─────────────────────────────────────────
+   FUN TEXT TRANSLATIONS
+───────────────────────────────────────── */
+const FUN = {
+  'Parameters':              '🕹️ CONFIG YR BUILD',
+  'Projection':              '🚀 TO THE MOON (maybe)',
+  'Initial investment':      '💸 seed money (pls no snacks)',
+  'Annual return rate':      '📈 stonks-go-brrr %',
+  'Time horizon':            '⏳ patience check (yrs)',
+  'Monthly contribution':    '🤑 monthly drip',
+  'Compounding frequency':   '🔁 how fast $ spawns $',
+  'Invested':                '💸 money in',
+  'Interest':                '🎰 free money??',
+  'Total value':             '🏎️ lambo fund',
+  'Investment Calculator':   '💻 MONEY.EXE',
+  'Compound return projector':'> running gains_calc.py...',
+  'Year-by-year breakdown':  '📊 the receipts (ur financial arc)',
+  'periods':                 'epochs',
+  'compounding':             'compounding (yes its legal)',
+  'Return':                  'Bruh factor',
+  'Horizon':                 'Patience',
+  'Rate':                    'Stonk %',
+  'Annual':                  'Yearly',
+  'Not financial advice.':   'Not financial advice (obv).',
+  'Projections assume a constant rate of return and are illustrative only. Past performance does not guarantee future results.':
+    "Past performance ≠ future results. also crypto is different don't @ me.",
+};
+const T = (key, fun) => fun && FUN[key] ? FUN[key] : key;
+
+/* ─────────────────────────────────────────
+   CHART SINGLETON
+───────────────────────────────────────── */
+let chartInst = null;
+
+/* ─────────────────────────────────────────
+   EDUCATION DATA
+───────────────────────────────────────── */
+const TOPICS = [
+  { id:'stocks', level:'l100', icon:'📈', title:'Stocks (Equities)', sub:'Own a slice of a company',
+    summary:'When you buy a stock you become a part-owner of that company. As it grows, your share grows in value.',
+    points:['Price reflects what investors believe the company is worth','Dividends = cash paid to shareholders from profits','Higher potential returns than cash — but higher short-term swings','Regulated on exchanges like NYSE, LSE, Euronext'],
+    detail:{ what:'A share of stock represents fractional ownership of a company. If Apple has 15 billion shares outstanding and you own 150, you own 0.000001% of Apple — including a claim on future profits.',
+      how:'You buy through a broker (Trading212, IBKR, Hargreaves Lansdown). The price fluctuates second-by-second based on supply and demand.',
+      example:'You buy 10 shares at £20 each = £200. The company grows 30% and you sell at £26 = £260. Profit: £60 before tax.',
+      risks:['Company can go bankrupt (shares → £0)','Short-term price can halve before recovering','Requires research or diversification'],
+      tips:['Start with index funds before picking individual stocks','Never invest money you need in 2–3 years','Reinvest dividends to accelerate compounding'] }},
+  { id:'etfs', level:'l100', icon:'🧺', title:'ETFs', sub:'Baskets of assets, traded like stocks',
+    summary:'An ETF holds hundreds of assets at once — giving you instant diversification for the cost of one trade.',
+    points:['Tracks an index (S&P 500, FTSE 100) or theme (clean energy)','Bought and sold on exchanges like a single stock','Very low fees — often 0.03%–0.20% per year (TER)','The cornerstone of most passive investing strategies'],
+    detail:{ what:'Exchange-Traded Funds pool investor money to buy a basket of assets. A single share of VWRP gives you exposure to 3,500+ companies across 50+ countries.',
+      how:'You buy one share and instantly own tiny fractions of every company inside it. The ETF rebalances automatically.',
+      example:'S&P 500 ETF (CSPX): Buy 1 share at £400 and you\'re exposed to Apple, Microsoft, Amazon and 497 other US giants.',
+      risks:['Market-wide crashes affect all companies inside','Currency risk if ETF holds foreign assets','Thematic ETFs can be overpriced niche bets'],
+      tips:['"Accumulating" ETFs (acc) reinvest dividends automatically — more tax-efficient','Compare TER: 0.07% vs 0.20% matters a lot over 30 years','VWRP or CSPX are popular starting points for UK investors'] }},
+  { id:'bonds', level:'l100', icon:'🏛️', title:'Bonds', sub:'Loans that pay you interest',
+    summary:'When you buy a bond, you lend money to a government or company. They pay you interest and return your capital at maturity.',
+    points:['Lower risk than stocks — especially government bonds','Predictable fixed income (coupon payments)','Price moves inversely to interest rates','Core of conservative and balanced portfolios'],
+    detail:{ what:'A bond is a debt instrument. The issuer promises to pay a fixed interest rate (coupon) and return the face value at maturity.',
+      how:'UK government bonds are Gilts. US ones are Treasuries. You can buy bond ETFs (IGLT, VGOV) for easy exposure.',
+      example:'You buy a £1,000 gilt with 5% coupon and 10-year maturity. Each year: £50. After 10 years: £1,000 back. Total: £1,500.',
+      risks:['If interest rates rise, existing bond prices fall','Corporate bonds can default','Inflation erodes real returns on fixed coupons'],
+      tips:['Bond ETFs are easier than buying individual bonds','Short-duration bonds are less rate-sensitive','Use bonds for capital preservation, not growth'] }},
+  { id:'isa', level:'l100', icon:'🛡️', title:'ISAs (UK)', sub:'Tax-free investment wrapper',
+    summary:'An ISA lets you invest up to £20,000/year completely tax-free — no capital gains or income tax, ever.',
+    points:['£20,000 annual allowance (2024/25)','Stocks & Shares ISA: invest in stocks, ETFs, funds','Cash ISA: interest tax-free (but inflation risk)','Lifetime ISA: up to £4,000/yr, 25% government bonus (under-40s)'],
+    detail:{ what:'An ISA is a tax wrapper around your investments. Inside it, any growth, dividends, or interest are completely tax-free in the UK.',
+      how:'Open with a broker. Fund it each tax year. The £20k limit resets every 6 April.',
+      example:'£20k/year for 20 years into S&P 500 at 8%. Outside ISA: owe capital gains tax. Inside: £0 tax on hundreds of thousands in gains.',
+      risks:['You cannot withdraw and re-invest the same year (flexible ISAs aside)','Cash ISAs rarely beat inflation','LISA has 25% penalty if not used for home/retirement'],
+      tips:['Always use your ISA allowance before a taxable account','Prioritise Stocks & Shares ISA for long-term growth','Transfer, don\'t close — many brokers offer instant ISA transfer'] }},
+  { id:'compound', level:'l100', icon:'⚡', title:'Compound Interest', sub:'The eighth wonder of the world',
+    summary:'Earning returns on your returns. Time is the most powerful variable — starting early beats contributing more, later.',
+    points:['Your gains earn gains — exponential not linear growth','Rule of 72: divide 72 by rate to find doubling time','7% rate → money doubles every ~10 years','Starting 10 years earlier can beat doubling contributions'],
+    detail:{ what:'Simple interest pays on the original amount only. Compound interest pays on the growing total — interest on interest. Over decades this creates a hockey-stick curve.',
+      how:'Formula: A = P(1 + r)ⁿ. With monthly contributions the curve steepens further. Use the calculator tab to model your scenario.',
+      example:'£5,000 at 7% for 30 years = £38,061. Add £200/month: £227,000. The extra £72,000 contributed became £189,000 through compounding.',
+      risks:['Compound interest works against you in debt too','Returns are not guaranteed','Inflation reduces real compound returns'],
+      tips:['Start now — even small. Time in market beats timing the market','Reinvest all dividends and distributions','Use tax-efficient wrappers so compounding isn\'t interrupted by tax bills'] }},
+  { id:'inflation', level:'l100', icon:'🔥', title:'Inflation & Real Returns', sub:'Why cash savings lose value',
+    summary:'Inflation silently erodes purchasing power. Your real return is what you earn after inflation — and cash rarely keeps up.',
+    points:['UK inflation target: 2% per year (Bank of England)','£10,000 in cash at 2% inflation = worth £8,200 in 10 years','Real return = Nominal return minus inflation','Equities have historically beaten inflation over long periods'],
+    detail:{ what:'If prices rise 4% and your savings account pays 2%, your real return is -2%. Your money is more but buys less.',
+      how:'To preserve and grow wealth, your investments must outpace inflation. Historically, global equities returned ~7–10% nominal, or ~5–7% real.',
+      example:'£10,000 in 2003 ≈ £18,000 purchasing power today. In cash at 1% average: ~£11,050 — a real-terms loss of ~40%.',
+      risks:['High inflation (70s, 2022) devastates fixed-income returns','Property can hedge but is illiquid','Stagflation is particularly damaging'],
+      tips:['Index-linked gilts (ILGs) adjust with RPI/CPI','Real assets — property, commodities, TIPS — can hedge inflation','Even 3% real return doubles purchasing power in 24 years'] }},
+  { id:'dca', level:'l200', icon:'🔄', title:'Dollar Cost Averaging', sub:'Invest regularly, remove emotion',
+    summary:'DCA means investing a fixed amount on a fixed schedule regardless of price — reducing the impact of market timing.',
+    points:['Buy more shares when prices are low, fewer when high','Removes the impossible task of timing the market','Turns volatility from enemy to advantage','Best via monthly direct debits into ISA/pension'],
+    detail:{ what:'Instead of £10,000 all at once, DCA means £500/month for 20 months. When prices dip you automatically buy more units.',
+      how:'Set up a recurring buy on your broker. Every month the same amount goes in. Most ISA platforms support this for free.',
+      example:'Month 1: price £10, buy 50 units. Month 2: price £5, buy 100 units. Month 3: price £8, buy 62.5 units. Average cost: £7.06. Current: £8. Gain: 13%.',
+      risks:['In a bull market, lump-sum statistically outperforms DCA','Still subject to overall market crashes','Requires discipline — easy to stop when markets fall (wrong time)'],
+      tips:['Automate completely so you can\'t second-guess it','DCA into broadly diversified ETFs for lowest risk','Most powerful in volatile markets with long time horizons'] }},
+  { id:'averaging-down', level:'l200', icon:'📉', title:'Averaging Down', sub:'Buying more as price falls — risky',
+    summary:'Buying additional shares in a falling position to reduce your average cost. Powerful or catastrophic depending on the asset.',
+    points:['Only appropriate if fundamental thesis is unchanged','Works for quality ETFs — dangerous for individual stocks','Never average down on a company in fundamental distress','Requires spare capital and conviction — not desperation'],
+    detail:{ what:'If you buy at £20 and it drops to £15, buying more brings your average below £20. If it recovers, you profit. If it keeps falling to £0, you\'ve compounded losses.',
+      how:'Ask: has anything fundamentally changed? Business deteriorated or just a market selloff? Only add if thesis is intact and position is small enough to afford more.',
+      example:'Buy 100 shares at £20 (£2,000). Falls to £12 — buy 100 more (£1,200). Total: 200 shares, avg cost £16. Recovers to £18 — up £400. Without averaging: still down £200.',
+      risks:['Individual stocks can go to £0 — averaging down is averaging into bankruptcy','Blocks capital from better opportunities','"Catching a falling knife" — price may continue lower'],
+      tips:['Limit to broad market ETFs and absolute conviction holdings','Max one average-down per position, only if < 5% of portfolio','Never average down with borrowed money'] }},
+  { id:'diversification', level:'l200', icon:'🌍', title:'Diversification', sub:'The only free lunch in investing',
+    summary:'Spreading investments across assets, geographies, and sectors so that any single failure cannot ruin your portfolio.',
+    points:['Uncorrelated assets reduce overall portfolio volatility','Geographic: UK, US, Emerging Markets, Europe','Asset class: equities, bonds, property, commodities','A single-stock portfolio is speculation, not investing'],
+    detail:{ what:'Markowitz (1952) proved mathematically that combining imperfectly correlated assets achieves the same expected return with lower risk.',
+      how:'Simplest: a global all-world ETF (VWRP) owns 3,500+ companies. Next: add a bond allocation. Advanced: add REITs, commodities, small-cap tilts.',
+      example:'UK tech crashes 40%. Your portfolio: 30% global equity, 20% US, 20% EM, 20% bonds, 10% property → overall -15%. Without diversification: -40%.',
+      risks:['Over-diversification dilutes returns','Correlations increase in crises — assets move together when you need them not to','Geographic diversification adds currency risk'],
+      tips:['Don\'t over-weight home country (home bias)','Two funds = excellent diversification: global equity ETF + bond ETF','Rebalance annually to maintain target allocations'] }},
+  { id:'asset-allocation', level:'l200', icon:'⚖️', title:'Asset Allocation', sub:'The decision that drives 90% of returns',
+    summary:'How you split your portfolio between stocks/bonds/cash/property determines most of your long-term outcome.',
+    points:['100 minus age = rough equity % (traditional rule)','Younger investors: higher equity %, more time to recover','Bonds reduce volatility but cap upside','Risk tolerance and time horizon drive the right allocation'],
+    detail:{ what:'Research shows asset allocation explains ~91% of portfolio return variation (Brinson et al). Stock picking and timing matter far less than most think.',
+      how:'Common: Aggressive (90/10), Moderate (60/40), Conservative (40/60). Target-date funds automatically shift from aggressive to conservative as you age.',
+      example:'Portfolio A (all stocks): £100k → £520k over 20 years but -40% crashes. Portfolio B (60/40): → £370k, max -22% drawdown. Different risk, different outcome — neither is "wrong".',
+      risks:['Too conservative in youth: inflation destroys purchasing power','Too aggressive near retirement: sequence-of-returns risk','Letting allocation drift without rebalancing changes your risk profile'],
+      tips:['Write down your target allocation as an Investment Policy Statement','Review annually — not more, to avoid emotional tinkering','Consider your human capital: young professionals have bond-like steady income, so can hold more equity'] }},
+  { id:'rebalancing', level:'l200', icon:'🎯', title:'Rebalancing', sub:'Sell high, buy low — automatically',
+    summary:'Rebalancing restores your target allocation by trimming winners and adding to laggards — enforcing discipline and managing risk.',
+    points:['Annual rebalancing sufficient for most investors','Threshold: act when any asset drifts ±5–10%','Use new contributions to rebalance (avoids selling costs)','Tax-advantaged accounts: rebalance freely without tax drag'],
+    detail:{ what:'Target 60/40. Stocks surge 30% → you drift to 68/32. Rebalancing sells stocks (selling high) and buys bonds (buying low) to restore 60/40.',
+      how:'Calendar: check and rebalance on a set date. Threshold: act when allocation drifts >5%. Hybrid is most practical.',
+      example:'Start: £60k stocks, £40k bonds. After bull run: £84k/£40k (68/32). Sell £10k stocks, buy £10k bonds → £74k/£50k = 60/40. You locked in some gains.',
+      risks:['Frequent rebalancing creates tax events outside sheltered accounts','Emotional resistance to selling winners','Transaction costs if using expensive platforms'],
+      tips:['Rebalance inside ISA or SIPP — no CGT triggered','Use fresh contributions to top up underweighted assets first','Calendar + threshold hybrid: check annually, act only if drift > 5%'] }},
+  { id:'cfd', level:'l300', icon:'⚠️', title:'CFDs — What They Are & Why to Avoid', sub:'Contracts for Difference — high risk derivatives',
+    summary:'CFDs let you speculate on price movements with leverage. 74–89% of retail traders lose money. Understand them, then avoid them.',
+    points:['Leverage amplifies both gains and losses — 10× leverage, 10× swings','You don\'t own the underlying asset — no shareholder rights','Overnight financing charges erode long-term positions','FCA data: 74–89% of retail CFD accounts lose money'],
+    warn:'Regulatory warning: The FCA requires brokers to display that a majority of retail clients lose money on CFDs. These are not investments — they are speculative instruments.',
+    detail:{ what:'A CFD is a contract to exchange the difference in price of an asset from open to close. You can go long or short. You never own the asset.',
+      how:'With 10:1 leverage, £1,000 controls a £10,000 position. A 5% move = 50% gain or loss. A 10% adverse move wipes your deposit.',
+      example:'CFD on £10,000 Apple stock with £1,000 margin (10:1). Apple drops 8% (£800). Your £1,000 is now £200 — 80% loss from an 8% move.',
+      risks:['Margin calls — broker closes position at worst moment','Overnight swap fees destroy any long-term logic','Platforms profit when you lose (market-maker model)','Addictive — variable ratio reinforcement'],
+      tips:['Want market exposure? Buy the ETF.','To short? Use inverse ETFs or small put options','CFDs are tools for professional traders hedging existing positions — not retail investing'] }},
+  { id:'index-investing', level:'l300', icon:'🏆', title:'Index Investing (Passive)', sub:'Beat most active managers by doing less',
+    summary:'Simply tracking a market index with low-cost ETFs outperforms the majority of actively managed funds over 10+ years.',
+    points:['SPIVA data: 90%+ of active funds underperform index over 15 years','Reason: fees, trading costs, and human error compound against returns','Passive funds: VWRP, CSPX, VGOV','Warren Buffett publicly advocates index funds for most investors'],
+    detail:{ what:'An index fund tracks a market benchmark by holding all (or a sample of) its constituents. No one picks stocks.',
+      how:'When Apple grows, the index fund automatically buys more. Winners self-select. Losers are trimmed. No human judgment.',
+      example:'Over 20 years to 2023: Vanguard S&P 500 index fund ~9.8% annually. Average US active large-cap ~7.6%. On £100k: £554k vs £427k. Same market.',
+      risks:['Capture 100% of market crashes — no defensive moves','Index-heavy US tech creates concentration risk','No opportunity to outperform — you are the market'],
+      tips:['Keep costs below 0.20% TER','Accumulating share classes reinvest dividends (tax-efficient in ISA)','Global diversification > single country index'] }},
+  { id:'sipp', level:'l300', icon:'🏦', title:'SIPPs & Pension Investing', sub:'Tax relief + compound = retirement wealth',
+    summary:'A SIPP adds 20–45% government tax relief to every contribution — making it the most powerful wealth-building tool for UK investors.',
+    points:['Basic rate taxpayers: 20% relief added automatically','Higher rate: claim further 20–25% via tax return','£60,000 annual contribution limit (2024/25)','Funds locked until age 57 (rising to 58 in 2028)'],
+    detail:{ what:'Every £80 you contribute becomes £100 inside (basic rate relief). Higher-rate taxpayers claim an additional £20–£25 back via self-assessment.',
+      how:'Open with Vanguard, ii, AJ Bell, or IBKR. Choose investments. HMRC adds 20% automatically. File self-assessment for higher-rate.',
+      example:'Earn £60k (40% taxpayer). Put £8,000 into SIPP. Gov adds £2,000. Claim £2,000 back. £10,000 in pension for effective cost of £6,000. Immediate 66% return.',
+      risks:['Cannot access until 57 — illiquid for decades','Pension rules can change','Very large pensions have complex tax treatment'],
+      tips:['Max ISA first (flexible access), then SIPP, then general account','SIPP + ISA combination = UK wealth building bedrock','Consider salary sacrifice — saves NI contributions too'] }},
+  { id:'tax-efficiency', level:'l300', icon:'🧮', title:'Tax-Efficient Investing', sub:'The return you keep matters most',
+    summary:'UK investors have powerful tax shelters. Using them correctly can add hundreds of thousands in real wealth over a lifetime.',
+    points:['Wrapper hierarchy: SIPP first → ISA → General','CGT allowance: £3,000 per year (2024)','Dividend allowance: £500 per year (2024)','Bed-and-ISA: sell and rebuy in ISA to shelter future gains'],
+    detail:{ what:'Tax drag is the silent killer. Outside sheltered accounts: dividends taxed at 8.75%/33.75%/39.35%. CGT at 10%/20%. Inside ISA/SIPP: 0%.',
+      how:'Priority: 1) Employer pension match (free money), 2) SIPP, 3) ISA, 4) GIA. Within GIA, hold high-yield assets inside shelters.',
+      example:'£1M portfolio, 4% yield = £40k dividends. Higher-rate taxpayer: £13,500 tax per year. Inside ISA: £0. Over 20 years at 7% growth: tax-sheltered portfolio is £400k+ larger.',
+      risks:['Tax law changes — allowances cut significantly 2022–2024','GIA gains above £3k annual allowance are taxable','Complex — high earners should get professional advice'],
+      tips:['Bed-and-ISA annually to shelter unrealised gains','Hold bond ETFs (high income) inside ISA','Charitable donations reduce income tax for very high earners'] }},
+  { id:'factor-investing', level:'l400', icon:'🔬', title:'Factor Investing', sub:'Tilting toward evidence-based return premiums',
+    summary:'Academic research identifies specific characteristics (factors) that have historically delivered excess returns: value, size, momentum, quality, and low volatility.',
+    points:['Fama-French Five-Factor Model identifies key return drivers','Value premium: cheap companies outperform expensive long-term','Size premium: small caps historically outperform large caps','Momentum: recent winners tend to keep winning (6–12 months)'],
+    detail:{ what:'CAPM explained returns via market beta alone. Fama and French showed value stocks (low P/B) and small-cap stocks delivered excess returns.',
+      how:'Factor ETFs tilt toward securities scoring high on target factors. Examples: iShares MSCI World Value, MSCI World Momentum, MSCI World Quality.',
+      example:'1926–2020 US data: Market premium ~5.4% over risk-free. Small-cap value added ~3–4% further annually. But cyclical — badly underperformed 2009–2020 before rebounding.',
+      risks:['Factor premiums can have decade-long droughts','Crowding: widely known factors get arbed away','Higher turnover and costs than simple index funds'],
+      tips:['Only tilt to factors you can hold through 10+ years of underperformance','Diversify across multiple factors — imperfectly correlated','Keep factor tilts modest: 10–20% of equity allocation'] }},
+  { id:'seq-returns', level:'l400', icon:'📊', title:'Sequence-of-Returns Risk', sub:'When you draw down matters as much as total returns',
+    summary:'Two investors with identical average returns but different crash timing can have wildly different outcomes. Crashes early in retirement are catastrophic.',
+    points:['Average return is meaningless without knowing the sequence','A crash in year 1 of retirement forces selling at lows','The "4% rule" assumes specific sequence assumptions','Mitigation: cash buffer, bucket strategy, flexible spending'],
+    detail:{ what:'Geometric mean returns are path-dependent when withdrawals are involved. A -30% year then +43% recovery restores capital in accumulation — but not in drawdown.',
+      how:'The 4% Rule (Bengen 1994) found 4% annual withdrawal had high historical success over 30 years with 60/40 — calibrated on US data with specific return sequences.',
+      example:'£500k portfolio, withdraw £25k/yr. Scenario A: +10%,+10%,+10%,-30%. Scenario B: -30%,+10%,+10%,+10%. Same average, but Scenario B portfolio ~£60k smaller after 4 years.',
+      risks:['Retiring into a bear market can mean running out of money a decade early','"One more year" syndrome — working longer reduces sequence risk','Static 4% rule may not work in low-yield environments'],
+      tips:['Maintain 2–3 years expenses in cash/bonds at retirement','"Bucket strategy": short (0–2yr), medium (2–10yr), long (10yr+) portfolios','Flexible withdrawal: spend less in down years, more when markets are up'] }},
+  { id:'valuation', level:'l400', icon:'🔭', title:'Valuation Fundamentals', sub:'What makes a stock cheap or expensive',
+    summary:'Understanding valuation metrics lets you assess whether a stock\'s price reflects fair value, a bargain, or overexuberance.',
+    points:['P/E Ratio: Price / Earnings — most common metric','CAPE (Shiller P/E): smoothed 10-year earnings, more reliable','P/B: Price to Book — relevant for banks and asset-heavy firms','Free Cash Flow Yield: FCF / Market Cap — Buffett\'s focus'],
+    detail:{ what:'A stock is worth the present value of all future cash flows. Valuation ratios are shortcuts to estimate this.',
+      how:'Compare P/E to sector average, historical average, and growth rate. PEG ratio divides P/E by growth — PEG < 1 traditionally considered cheap.',
+      example:'Company A: P/E 12, growing 8%/yr (PEG 1.5). Company B: P/E 35, growing 8%/yr (PEG 4.4). A appears much more attractively valued.',
+      risks:['P/E can be manipulated via accounting and buybacks','High-growth companies deserve high multiples','Value traps are real — cheap can get cheaper'],
+      tips:['Never use one metric in isolation — cross-check P/E, EV/EBITDA, FCF yield','Sector matters: utilities P/E 15, software P/E 40 — compare like-for-like','Understand why something is cheap before buying'] }},
+  { id:'risk-mgmt', level:'l400', icon:'🛡️', title:'Advanced Risk Management', sub:'Protect capital; let compounding do the work',
+    summary:'Institutional investors obsess over downside risk, drawdown management, and position sizing. Protecting against catastrophic loss is more important than maximizing gains.',
+    points:['Kelly Criterion: mathematically optimal position sizing','Maximum drawdown: worst peak-to-trough loss in history','Sharpe Ratio: return per unit of volatility taken','Correlation matrix: how positions move relative to each other'],
+    detail:{ what:'Risk management isn\'t avoiding all risk — it\'s taking the right risks in the right amounts. Kelly Criterion calculates optimal bet size.',
+      how:'Kelly fraction = (edge/odds). In practice, use "fractional Kelly" (¼ or ½ Kelly) to reduce variance. Max position in any single stock: 5–10%.',
+      example:'Full Kelly says 25% of portfolio. ½ Kelly = 12.5%. Halves expected growth but dramatically reduces chance of portfolio destruction. Professionals use ¼ Kelly or less.',
+      risks:['Overconfidence in models — all models are wrong','Correlation breaks down in crises','Tail risk events (Black Swans) are not in historical data'],
+      tips:['Track your Sharpe Ratio annually — you want returns, not just risk','Run a stress test: what happens if markets fall 40%?','Never let any single position exceed 10% of total portfolio (unless index ETF)'] }},
+];
+
+const CURRENCIES = { '£':{ locale:'en-GB' }, '$':{ locale:'en-US' }, '€':{ locale:'de-DE' } };
+const FREQS = [
+  { label:'Annual',  key:'annual',    n:1   },
+  { label:'Qtly',    key:'quarterly', n:4   },
+  { label:'Monthly', key:'monthly',   n:12  },
+  { label:'Daily',   key:'daily',     n:365 },
+];
+const fmtN = (n,s,l) => s+Math.round(n).toLocaleString(l);
+const fmtK = (n,s) => n>=1e6?s+(n/1e6).toFixed(1)+'M':n>=1000?s+(n/1000).toFixed(0)+'k':s+Math.round(n);
+
+function buildSchedule(P,rate,years,monthly,freqN){
+  const r=(rate/100)/freqN,mpp=12/freqN;
+  let bal=P,tc=P;
+  return Array.from({length:years},(_,i)=>{
+    let yi=0;
+    for(let p=0;p<freqN;p++){const int=bal*r;yi+=int;bal+=int+monthly*mpp;tc+=monthly*mpp;}
+    return{year:i+1,balance:Math.round(bal),totalContrib:Math.round(tc),yearInterest:Math.round(yi),totalGain:Math.round(bal-tc)};
+  });
+}
+
+/* ─── Floating decorators in fun mode ─── */
+const FLOATERS = [
+  { emoji:'📈', style:{ top:'15%',  left:'2%',  animationDelay:'0s',    animationDuration:'3.2s' } },
+  { emoji:'💰', style:{ top:'35%',  right:'2%', animationDelay:'0.8s',  animationDuration:'2.8s' } },
+  { emoji:'🤓', style:{ top:'60%',  left:'1%',  animationDelay:'1.4s',  animationDuration:'3.5s' } },
+  { emoji:'🚀', style:{ top:'75%',  right:'1%', animationDelay:'0.4s',  animationDuration:'2.5s' } },
+  { emoji:'💻', style:{ top:'20%',  right:'3%', animationDelay:'1.8s',  animationDuration:'4s'   } },
+  { emoji:'⚡', style:{ top:'50%',  left:'2%',  animationDelay:'0.2s',  animationDuration:'3s'   } },
+];
+
+function FunFloaters({ fun }){
+  if(!fun) return null;
+  return (
+    <>
+      {FLOATERS.map((f,i)=>(
+        <div key={i} className="floater" style={{ ...f.style, animationDuration:f.style.animationDuration, animationDelay:f.style.animationDelay }}>
+          {f.emoji}
+        </div>
+      ))}
+    </>
+  );
+}
+
+/* ─── Fun ticker tape ─── */
+function FunTape(){
+  const items = ['📈 VWRP +0.42%','📉 BITCOIN -3.2%','🚀 NVDA +2.1%','💸 S&P500 +0.8%','🏛️ GILT YIELD 4.2%','💰 ISA ALLOWANCE £20K','⚡ COMPOUND INTEREST IS REAL','🤓 TIME IN MARKET > TIMING MARKET','🎯 DIVERSIFY OR CRY','🔁 DCA GANG'];
+  return (
+    <div className="fun-tape">
+      <div className="fun-tape-inner">
+        {[...items,...items].map((item,i)=>(
+          <span key={i} className="fun-tape-item">
+            <span className={item.includes('-')?'fun-tape-down':'fun-tape-up'}>{item}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   SLIDER
+───────────────────────────────────────── */
+function Slider({ label, min, max, step, value, onChange, display, fun }){
+  return(
+    <div className="ctrl">
+      <div className="ctrl-top">
+        <span className="ctrl-name">{T(label,fun)}</span>
+        <span className="ctrl-val">{display}</span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value}
+        onChange={e=>onChange(Number(e.target.value))}/>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   CALCULATOR PAGE
+───────────────────────────────────────── */
+function CalculatorPage({ fun }){
+  const [principal,setPrincipal] = useState(5000);
+  const [rate,setRate]           = useState(7);
+  const [years,setYears]         = useState(20);
+  const [monthly,setMonthly]     = useState(0);
+  const [freq,setFreq]           = useState('annual');
+  const [currency,setCurrency]   = useState('£');
+  const canvasRef = useRef(null);
+
+  const sym = currency, locale = CURRENCIES[currency].locale;
+  const freqN = FREQS.find(f=>f.key===freq).n;
+  const rows  = buildSchedule(principal,rate,years,monthly,freqN);
+  const last  = rows[rows.length-1]||{balance:principal,totalContrib:principal,totalGain:0};
+
+  const finalBal    = last.balance;
+  const totalInvest = last.totalContrib;
+  const interest    = last.totalGain;
+  const multiplier  = (finalBal/totalInvest).toFixed(2);
+  const cagr        = ((Math.pow(finalBal/totalInvest,1/years)-1)*100).toFixed(1);
+
+  // Chart colors
+  const C = fun
+    ? { interest:'rgba(57,255,20,0.75)', invested:'rgba(0,229,255,0.4)',
+        tooltip:'#080818', ttBorder:'rgba(0,229,255,0.3)',
+        ttTitle:'rgba(0,229,255,0.5)', ttBody:'#e0ffe0',
+        gridColor:'rgba(0,229,255,0.06)', tickColor:'rgba(0,229,255,0.3)' }
+    : { interest:'rgba(22,199,132,0.7)', invested:'rgba(26,110,240,0.38)',
+        tooltip:'#1a2132', ttBorder:'rgba(255,255,255,0.1)',
+        ttTitle:'rgba(220,228,240,0.5)', ttBody:'#dce4f0',
+        gridColor:'rgba(255,255,255,0.04)', tickColor:'rgba(220,228,240,0.28)' };
+
+  useEffect(()=>{
+    if(!canvasRef.current) return;
+    const maxPts=Math.min(rows.length,25);
+    const step=Math.max(1,Math.ceil(rows.length/maxPts));
+    const pts=rows.filter((_,i)=>i%step===0||i===rows.length-1);
+    const labels=pts.map(r=>`Y${r.year}`);
+    const invested=pts.map(r=>r.totalContrib);
+    const gains=pts.map(r=>Math.max(0,r.totalGain));
+
+    if(chartInst){
+      chartInst.data.labels=labels;
+      chartInst.data.datasets[0].data=gains;
+      chartInst.data.datasets[0].backgroundColor=C.interest;
+      chartInst.data.datasets[1].data=invested;
+      chartInst.data.datasets[1].backgroundColor=C.invested;
+      chartInst.options.plugins.tooltip.backgroundColor=C.tooltip;
+      chartInst.options.plugins.tooltip.titleColor=C.ttTitle;
+      chartInst.options.plugins.tooltip.bodyColor=C.ttBody;
+      chartInst.update('none');
+    } else {
+      chartInst=new Chart(canvasRef.current,{
+        type:'bar',
+        data:{ labels, datasets:[
+          {label:'Interest',data:gains,    backgroundColor:C.interest,stack:'s',borderRadius:2},
+          {label:'Invested',data:invested, backgroundColor:C.invested,stack:'s',borderRadius:0},
+        ]},
+        options:{
+          responsive:true,maintainAspectRatio:false,animation:false,
+          plugins:{
+            legend:{display:false},
+            tooltip:{
+              backgroundColor:C.tooltip,borderColor:C.ttBorder,borderWidth:1,
+              titleColor:C.ttTitle,bodyColor:C.ttBody,
+              titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},
+              callbacks:{
+                title:ctx=>`Year ${ctx[0].label.replace('Y','')}`,
+                label:ctx=>` ${ctx.dataset.label}: ${sym}${Math.round(ctx.raw).toLocaleString(locale)}`,
+              },
+            },
+          },
+          scales:{
+            x:{stacked:true,grid:{display:false},border:{color:'rgba(255,255,255,0.06)'},
+              ticks:{color:C.tickColor,font:{family:'JetBrains Mono',size:9},autoSkip:true,maxTicksLimit:12}},
+            y:{stacked:true,grid:{color:C.gridColor},border:{display:false},
+              ticks:{color:C.tickColor,font:{family:'JetBrains Mono',size:9},callback:v=>fmtK(v,sym)}},
+          },
+        },
+      });
+    }
+  },[principal,rate,years,monthly,freq,currency,fun]);
+
+  useEffect(()=>()=>{if(chartInst){chartInst.destroy();chartInst=null;}},[]);
+
+  const title = T('Investment Calculator', fun);
+  const sub   = T('Compound return projector', fun);
+
+  return(
+    <div className="page">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:20,gap:12,flexWrap:'wrap'}}>
+        <div>
+          <div className={`fun-heading`} style={{fontSize:fun?16:20,fontWeight:600,letterSpacing:fun?'0.05em':'-0.01em',color:fun?'var(--blue)':'var(--text)',textShadow:fun?'0 0 10px var(--blue)':'none',fontFamily:fun?'Orbitron, sans-serif':'inherit'}}>
+            {title}
+          </div>
+          <div style={{fontSize:11,color:'var(--text-3)',fontFamily:'JetBrains Mono, monospace'}}>{sub}</div>
+        </div>
+        <div className="seg">
+          {Object.keys(CURRENCIES).map(c=>(
+            <button key={c} className={`seg-btn${currency===c?' active':''}`} onClick={()=>setCurrency(c)}>{c}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="calc-grid">
+        <div className="panel">
+          <div className="panel-head">
+            <div className="panel-dot"></div>
+            <span className="panel-label">{T('Parameters',fun)}</span>
+          </div>
+          <Slider label="Initial investment"   min={100}  max={200000} step={100} value={principal} onChange={setPrincipal} display={fmtN(principal,sym,locale)} fun={fun}/>
+          <Slider label="Annual return rate"   min={0.5}  max={30}     step={0.5} value={rate}      onChange={setRate}      display={`${rate}%`}                  fun={fun}/>
+          <Slider label="Time horizon"         min={1}    max={50}     step={1}   value={years}     onChange={setYears}     display={`${years} yr${years>1?'s':''}`} fun={fun}/>
+          <Slider label="Monthly contribution" min={0}    max={10000}  step={50}  value={monthly}   onChange={setMonthly}   display={monthly===0?'—':fmtN(monthly,sym,locale)} fun={fun}/>
+          <div className="ctrl">
+            <div className="ctrl-top">
+              <span className="ctrl-name">{T('Compounding frequency',fun)}</span>
+            </div>
+            <div className="freq">
+              {FREQS.map(f=>(
+                <button key={f.key} className={`freq-btn${freq===f.key?' active':''}`} onClick={()=>setFreq(f.key)}>
+                  {T(f.label,fun)}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel-head">
+            <div className="panel-dot" style={{background:'var(--green)'}}></div>
+            <span className="panel-label">{T('Projection',fun)}</span>
+          </div>
+          <div className="stats">
+            <div className="stat">
+              <div className="stat-label">{T('Invested',fun)}</div>
+              <div className="stat-val">{fmtN(totalInvest,sym,locale)}</div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">{T('Interest',fun)}</div>
+              <div className="stat-val">{fmtN(interest,sym,locale)}</div>
+            </div>
+            <div className="stat accent">
+              <div className="stat-label">{T('Total value',fun)}</div>
+              <div className="stat-val">{fmtN(finalBal,sym,locale)}</div>
+            </div>
+          </div>
+          <div className="ticker">
+            {[[T('Return',fun),`${multiplier}×`,'up'],[T('CAGR',fun),`${cagr}%`,'up'],[T('Horizon',fun),`${years}Y`,'neu'],[T('Rate',fun),`${rate}% p.a.`,'neu']].map(([k,v,c],i,arr)=>(
+              <React.Fragment key={k}>
+                <div className="ticker-item">
+                  <span className="ticker-key">{k}</span>
+                  <span className={`ticker-val ${c}`}>{v}</span>
+                </div>
+                {i<arr.length-1&&<div className="ticker-sep"></div>}
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="legend">
+            <div className="legend-item">
+              <span className="legend-sq" style={{background:fun?'rgba(57,255,20,0.75)':'rgba(22,199,132,0.7)'}}></span>
+              {fun?'🤑 free money':'Interest earned'}
+            </div>
+            <div className="legend-item">
+              <span className="legend-sq" style={{background:fun?'rgba(0,229,255,0.5)':'rgba(26,110,240,0.45)',border:fun?'1px solid rgba(0,229,255,0.4)':'1px solid rgba(26,110,240,0.4)'}}></span>
+              {fun?'💸 money put in':'Amount invested'}
+            </div>
+          </div>
+          <div className="chart-wrap">
+            <canvas ref={canvasRef}></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div className="table-panel">
+        <div className="table-top">
+          <span className="table-title">{T('Year-by-year breakdown',fun)}</span>
+          <span className="table-badge">{rows.length} {T('periods',fun)} · {FREQS.find(f=>f.key===freq).label} {T('compounding',fun)}</span>
+        </div>
+        <div className="table-scroll">
+          <table>
+            <thead><tr>
+              <th>{fun?'Yr 📅':'Year'}</th>
+              <th>{fun?'Stack 💰':'Portfolio value'}</th>
+              <th>{fun?'Put in 💸':'Total invested'}</th>
+              <th>{fun?'Free $ 🎰':'Yr interest'}</th>
+              <th>{fun?'Total W 🏆':'Total gain'}</th>
+              <th>{fun?'Gainz % 📈':'Return %'}</th>
+            </tr></thead>
+            <tbody>
+              {rows.map(row=>{
+                const pct=((row.balance/row.totalContrib-1)*100).toFixed(1);
+                return(
+                  <tr key={row.year}>
+                    <td>Y{row.year}</td>
+                    <td className="tot">{fmtN(row.balance,sym,locale)}</td>
+                    <td>{fmtN(row.totalContrib,sym,locale)}</td>
+                    <td className="up">+{fmtN(row.yearInterest,sym,locale)}</td>
+                    <td className="up">+{fmtN(row.balance-row.totalContrib,sym,locale)}</td>
+                    <td className="up">+{pct}%</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="footer-bar">
+        <p className="footer-note">
+          <strong>{T('Not financial advice.',fun)}</strong>{' '}
+          {T('Projections assume a constant rate of return and are illustrative only. Past performance does not guarantee future results.',fun)}
+        </p>
+        <div className="footer-brand">InvestIQ · <span>{fun?'v2.0 🤓':'v2.0'}</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   TOPIC MODAL
+───────────────────────────────────────── */
+function TopicModal({ topic, onClose, fun }){
+  const { detail, title, icon, level, warn } = topic;
+  const lvlColor = {l100:'var(--blue)',l200:'var(--green)',l300:'var(--amber)',l400:'var(--purple)'}[level];
+
+  useEffect(()=>{
+    const esc=e=>{if(e.key==='Escape')onClose();};
+    window.addEventListener('keydown',esc);
+    return()=>window.removeEventListener('keydown',esc);
+  },[]);
+
+  return(
+    <div className="modal-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div className="modal">
+        <div className="modal-head">
+          <div className="card-icon" style={{background:`color-mix(in srgb, ${lvlColor} 15%, transparent)`,fontSize:22}}>{icon}</div>
+          <div>
+            <span className={`card-level ${level}`}>{level.toUpperCase()}</span>
+            <div style={{fontSize:16,fontWeight:600,color:'var(--text)'}}>{title}</div>
+          </div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          <h3>{fun?'> what_is_this.md':'What is it?'}</h3>
+          <p>{detail.what}</p>
+          <h3>{fun?'> how_it_works.sh':'How it works'}</h3>
+          <p>{detail.how}</p>
+          <h3>{fun?'> example.log':'Real-world example'}</h3>
+          <div className="example-box">
+            <strong>{fun?'📌 scenario: ':'📌 Example: '}</strong>{detail.example}
+          </div>
+          {warn&&<div className="warn-box"><span className="warn-icon">⚠️</span><span>{warn}</span></div>}
+          <h3>{fun?'> risks.txt (read this)':'Risks to know'}</h3>
+          <ul>{detail.risks.map((r,i)=><li key={i}>{r}</li>)}</ul>
+          <h3>{fun?'> pro_tips.sh --exec':'Actionable tips'}</h3>
+          <ul>{detail.tips.map((t,i)=><li key={i}>{t}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   EDUCATION PAGE
+───────────────────────────────────────── */
+function EducationPage({ fun }){
+  const [levelFilter,setLevelFilter] = useState('all');
+  const [activeCard,setActiveCard]   = useState(null);
+  const filtered = levelFilter==='all' ? TOPICS : TOPICS.filter(t=>t.level===levelFilter);
+  const lvlColor = {l100:'var(--blue)',l200:'var(--green)',l300:'var(--amber)',l400:'var(--purple)'};
+  const lvlBg    = {l100:'var(--blue-dim)',l200:'var(--green-dim)',l300:'var(--amber-dim)',l400:'var(--purple-dim)'};
+
+  return(
+    <div className="page">
+      {activeCard&&<TopicModal topic={activeCard} onClose={()=>setActiveCard(null)} fun={fun}/>}
+
+      <div className="edu-hero">
+        <div className="edu-hero-tag">{fun?'> sudo learn --investing --level=MAX 🤓':'📚 Investor Education Hub'}</div>
+        <h1 className="fun-heading">
+          {fun?'ok lets get this bread 🍞💰':'From Zero to Hero Investor'}
+        </h1>
+        <p>{fun
+          ? "no cap, this is actually how rich ppl think. ctrl+f your way through L100→L400 and become financially ungovernable 💅 (still not financial advice lol)"
+          : "Master the concepts that build real wealth — from the basics of stocks and ETFs all the way to factor models and sequence-of-returns risk. Click any card to go deep."
+        }</p>
+      </div>
+
+      <div className="level-tabs">
+        {[
+          {key:'all',  label:fun?'🗂️ all of it':    'All Topics',          cls:'active-all' },
+          {key:'l100', label:fun?'👶 L100 basics':   'L100 — Foundations', cls:'active-l100'},
+          {key:'l200', label:fun?'🧠 L200 big brain': 'L200 — Strategy',    cls:'active-l200'},
+          {key:'l300', label:fun?'🔥 L300 advanced':  'L300 — Advanced',    cls:'active-l300'},
+          {key:'l400', label:fun?'🤯 L400 nerd mode': 'L400 — Expert',      cls:'active-l400'},
+        ].map(({key,label,cls})=>(
+          <button key={key} className={`level-tab${levelFilter===key?' '+cls:''}`}
+            onClick={()=>setLevelFilter(key)}>{label}</button>
+        ))}
+      </div>
+
+      <div className="cards-grid">
+        {filtered.map(topic=>(
+          <div className="edu-card" key={topic.id} onClick={()=>setActiveCard(topic)}>
+            <div className="edu-card-head">
+              <div className="card-icon" style={{background:lvlBg[topic.level],fontSize:18}}>{topic.icon}</div>
+              <div className="card-meta">
+                <span className={`card-level ${topic.level}`}>{topic.level.toUpperCase()}</span>
+                <div className="card-title">{topic.title}</div>
+                <div className="card-sub">{topic.sub}</div>
+              </div>
+            </div>
+            <div className="edu-card-body">
+              <p>{topic.summary}</p>
+              <div className="key-points">
+                {topic.points.map((pt,i)=>(
+                  <div className="kp" key={i}>
+                    <div className="kp-dot" style={{background:lvlColor[topic.level]}}></div>
+                    <span>{pt}</span>
+                  </div>
+                ))}
+              </div>
+              {topic.warn&&<div className="warn-box"><span className="warn-icon">⚠️</span><span style={{fontSize:11}}>{topic.warn}</span></div>}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="footer-bar">
+        <p className="footer-note">
+          <strong>{fun?'Not financial advice (obv 🙄).':'Educational purposes only.'}</strong>{' '}
+          {fun?'do ur own research. consult a real human with a license. this is a website made by vibes 😌':'Nothing here constitutes financial advice. Always do your own research or consult a regulated financial adviser.'}
+        </p>
+        <div className="footer-brand">InvestIQ · <span>{fun?'v2.0 🤓':'v2.0'}</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* ═════════════════════════════════════════
+   PORTFOLIO ANALYZER PAGE
+═════════════════════════════════════════ */
+let portCharts = {};
+const CAT_COLORS = {
+  'ETF':        '#1a6ef0','Stocks':    '#16c784','Bonds':      '#f59e0b',
+  'Cash':       '#8b5cf6','Property':  '#14b8a6','Commodities':'#e5392b',
+  'Crypto':     '#ff006e','Other':     '#64748b',
+};
+const CAT_LIST   = Object.keys(CAT_COLORS);
+const SECTOR_LIST= ['Technology','Healthcare','Finance','Consumer','Energy','Industrials','Materials','Utilities','Real Estate','Communication','Global','Government','Cash','Other'];
+
+const DEFAULT_HOLDINGS = [
+  {id:1,name:'VWRP – Global ETF',   value:15000,cat:'ETF',    sector:'Global'    },
+  {id:2,name:'CSPX – S&P 500 ETF',  value:8000, cat:'ETF',    sector:'Technology'},
+  {id:3,name:'AAPL – Apple',         value:3500, cat:'Stocks', sector:'Technology'},
+  {id:4,name:'VGOV – UK Gilts',      value:5000, cat:'Bonds',  sector:'Government'},
+  {id:5,name:'Cash ISA',             value:2000, cat:'Cash',   sector:'Cash'      },
+];
+
+function PortfolioPage({ fun }){
+  const [holdings,  setHoldings ] = useState(DEFAULT_HOLDINGS);
+  const [nextId,    setNextId   ] = useState(6);
+  const [newName,   setNewName  ] = useState('');
+  const [newVal,    setNewVal   ] = useState('');
+  const [newCat,    setNewCat   ] = useState('ETF');
+  const [newSector, setNewSector] = useState('Global');
+  const donutRef = useRef(null);
+  const barRef   = useRef(null);
+
+  const total = holdings.reduce((s,h)=>s+h.value,0)||1;
+
+  // Build donut data
+  const catMap = {};
+  holdings.forEach(h=>{ catMap[h.cat]=(catMap[h.cat]||0)+h.value; });
+  const catLabels = Object.keys(catMap);
+  const catVals   = catLabels.map(c=>catMap[c]);
+  const catColors = catLabels.map(c=>CAT_COLORS[c]||'#64748b');
+
+  // Build sector bar data
+  const secMap = {};
+  holdings.forEach(h=>{ secMap[h.sector]=(secMap[h.sector]||0)+h.value; });
+  const secLabels = Object.keys(secMap).sort((a,b)=>secMap[b]-secMap[a]);
+  const secVals   = secLabels.map(s=>secMap[s]);
+
+  const fmtC = v => '£'+Math.round(v).toLocaleString('en-GB');
+  const pct  = v => ((v/total)*100).toFixed(1)+'%';
+
+  useEffect(()=>{
+    if(!donutRef.current) return;
+    if(portCharts.donut){ portCharts.donut.data.labels=catLabels; portCharts.donut.data.datasets[0].data=catVals; portCharts.donut.data.datasets[0].backgroundColor=catColors; portCharts.donut.update('none'); }
+    else portCharts.donut=new Chart(donutRef.current,{
+      type:'doughnut',
+      data:{labels:catLabels,datasets:[{data:catVals,backgroundColor:catColors,borderWidth:2,borderColor:'var(--surface)'}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'65%',animation:false,
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2132',titleColor:'rgba(220,228,240,0.5)',bodyColor:'#dce4f0',titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},callbacks:{label:ctx=>` ${ctx.label}: £${Math.round(ctx.raw).toLocaleString('en-GB')} (${((ctx.raw/total)*100).toFixed(1)}%)`}}}},
+    });
+  },[holdings]);
+
+  useEffect(()=>{
+    if(!barRef.current) return;
+    const colors = secLabels.map((_,i)=>`hsl(${(i*47)%360},60%,55%)`);
+    if(portCharts.bar){ portCharts.bar.data.labels=secLabels; portCharts.bar.data.datasets[0].data=secVals; portCharts.bar.data.datasets[0].backgroundColor=colors; portCharts.bar.update('none'); }
+    else portCharts.bar=new Chart(barRef.current,{
+      type:'bar',
+      data:{labels:secLabels,datasets:[{data:secVals,backgroundColor:colors,borderRadius:3}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:false,
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2132',bodyColor:'#dce4f0',bodyFont:{family:'JetBrains Mono',size:11},callbacks:{label:ctx=>` £${Math.round(ctx.raw).toLocaleString('en-GB')} (${((ctx.raw/total)*100).toFixed(1)}%)`}}},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(220,228,240,0.28)',font:{family:'JetBrains Mono',size:9},callback:v=>'£'+(v>=1000?(v/1000).toFixed(0)+'k':v)},border:{display:false}},
+          y:{grid:{display:false},ticks:{color:'rgba(220,228,240,0.35)',font:{family:'JetBrains Mono',size:9}},border:{display:false}},
+        }},
+    });
+  },[holdings]);
+
+  useEffect(()=>()=>{Object.values(portCharts).forEach(c=>c.destroy()); portCharts={};},[]);
+
+  const addHolding=()=>{
+    const v=parseFloat(newVal);
+    if(!newName.trim()||!v||v<=0) return;
+    setHoldings(h=>[...h,{id:nextId,name:newName.trim(),value:v,cat:newCat,sector:newSector}]);
+    setNextId(n=>n+1); setNewName(''); setNewVal('');
+  };
+  const removeHolding=id=>setHoldings(h=>h.filter(x=>x.id!==id));
+
+  // Concentration warnings
+  const topSec = secLabels[0];
+  const topSecPct = total>0?((secMap[topSec]||0)/total)*100:0;
+  const cashPct   = total>0?((catMap['Cash']||0)/total)*100:0;
+
+  const tagLine = fun ? '> portfolio_xray.py --run' : '🗂️ Portfolio Analysis';
+
+  return(
+    <div className="page">
+      <div className="tool-hero">
+        <div className="tool-hero-left">
+          <div className="tool-hero-tag">{tagLine}</div>
+          <h2>{fun?'YOUR ASSET MATRIX 📊':'Portfolio Analyzer'}</h2>
+          <p>{fun?'add ur bags below. we\'ll tell u if ur cooked (too much tech) or actually diversified 🤓':'Add your holdings to see your true asset allocation, sector exposure, and concentration risks at a glance.'}</p>
+        </div>
+        <div className="stat accent" style={{minWidth:140,textAlign:'center',flexShrink:0}}>
+          <div className="stat-label">{fun?'TOTAL BAGS':'Total Portfolio'}</div>
+          <div className="stat-val">{fmtC(total)}</div>
+        </div>
+      </div>
+
+      <div className="two-col">
+        {/* Left: holdings */}
+        <div className="panel">
+          <div className="panel-head"><div className="panel-dot"></div><span className="panel-label">{fun?'🎒 ur bags':'Holdings'}</span></div>
+
+          <div style={{maxHeight:260,overflowY:'auto',scrollbarWidth:'thin',scrollbarColor:'var(--surface3) transparent'}}>
+            {holdings.map(h=>(
+              <div className="holding-row" key={h.id}>
+                <div style={{width:8,height:8,borderRadius:'50%',background:CAT_COLORS[h.cat]||'#64748b',flexShrink:0}}></div>
+                <div className="holding-name">{h.name}</div>
+                <div className="holding-value">{fmtC(h.value)}</div>
+                <div className="holding-cat" style={{background:CAT_COLORS[h.cat]+'22',color:CAT_COLORS[h.cat]}}>{h.cat}</div>
+                <div style={{fontFamily:'JetBrains Mono,monospace',fontSize:10,color:'var(--text-3)',width:42,textAlign:'right'}}>{pct(h.value)}</div>
+                <button className="holding-del" onClick={()=>removeHolding(h.id)}>×</button>
+              </div>
+            ))}
+          </div>
+
+          <div className="add-row" style={{marginTop:14}}>
+            <input type="text"   placeholder="Asset name" value={newName}   onChange={e=>setNewName(e.target.value)}   style={{flex:2,minWidth:80}} onKeyDown={e=>e.key==='Enter'&&addHolding()}/>
+            <input type="number" placeholder="Value £"    value={newVal}    onChange={e=>setNewVal(e.target.value)}    style={{width:88}}/>
+            <select value={newCat}    onChange={e=>setNewCat(e.target.value)}>{CAT_LIST.map(c=><option key={c}>{c}</option>)}</select>
+            <select value={newSector} onChange={e=>setNewSector(e.target.value)}>{SECTOR_LIST.map(s=><option key={s}>{s}</option>)}</select>
+            <button className="add-btn" onClick={addHolding}>{fun?'+ bag':'+ Add'}</button>
+          </div>
+        </div>
+
+        {/* Right: donut + health */}
+        <div className="panel">
+          <div className="panel-head"><div className="panel-dot" style={{background:'var(--green)'}}></div><span className="panel-label">{fun?'🥧 allocation pie':'Allocation'}</span></div>
+          <div style={{display:'flex',gap:16,alignItems:'center',flexWrap:'wrap'}}>
+            <div className="chart-wrap-sq" style={{flex:'0 0 200px',height:200}}>
+              <canvas ref={donutRef}></canvas>
+              <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',textAlign:'center'}}>
+                <div style={{fontFamily:'JetBrains Mono,monospace',fontSize:11,color:'var(--text-3)'}}>{fun?'bags':'assets'}</div>
+                <div style={{fontFamily:'JetBrains Mono,monospace',fontSize:16,fontWeight:500,color:'var(--text)'}}>{holdings.length}</div>
+              </div>
+            </div>
+            <div style={{flex:1,minWidth:120}}>
+              {catLabels.map((c,i)=>(
+                <div className="health-item" key={c} style={{flexDirection:'column',alignItems:'flex-start',gap:6}}>
+                  <div style={{display:'flex',width:'100%',justifyContent:'space-between',alignItems:'center'}}>
+                    <span style={{display:'flex',alignItems:'center',gap:6,fontSize:12,fontWeight:500,color:'var(--text)'}}>
+                      <span style={{width:8,height:8,borderRadius:'50%',background:catColors[i],display:'inline-block'}}></span>{c}
+                    </span>
+                    <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:11,color:catColors[i]}}>{pct(catVals[i])}</span>
+                  </div>
+                  <div className="health-bar-track"><div className="health-bar-fill" style={{width:pct(catVals[i]),background:catColors[i]+'bb'}}></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {topSecPct>50&&<div className="warn-box" style={{marginTop:12}}><span className="warn-icon">⚠️</span><span>{fun?`bro ur ${topSecPct.toFixed(0)}% in ${topSec}... diversify or cry 💀`:`High concentration: ${topSecPct.toFixed(0)}% of your portfolio is in ${topSec}. Consider diversifying to reduce sector risk.`}</span></div>}
+          {cashPct>30&&<div className="warn-box" style={{marginTop:6}}><span className="warn-icon">💤</span><span style={{color:'var(--amber)'}}>{fun?`${cashPct.toFixed(0)}% cash bro. inflation is eating ur lunch rn 🧃`:`${cashPct.toFixed(0)}% in cash. At current inflation rates, idle cash loses real value over time.`}</span></div>}
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="panel-head"><div className="panel-dot" style={{background:'var(--amber)'}}></div><span className="panel-label">{fun?'🌐 sector map':'Sector Exposure'}</span></div>
+        <div className="chart-wrap-lg"><canvas ref={barRef}></canvas></div>
+      </div>
+
+      <div className="footer-bar">
+        <p className="footer-note"><strong>{fun?'Not financial advice lol.':'Not financial advice.'}</strong>{' '}{fun?'this is literally just a pie chart 🥧':'Holdings are entered manually. This tool does not connect to any brokerage.'}</p>
+        <div className="footer-brand">InvestIQ · <span>{fun?'v2.0 🤓':'v2.0'}</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* ═════════════════════════════════════════
+   MONTE CARLO PAGE
+═════════════════════════════════════════ */
+let mcChart = null;
+
+function randNorm(mean, std){
+  const u1=Math.random()||1e-10, u2=Math.random();
+  return mean + std * Math.sqrt(-2*Math.log(u1)) * Math.cos(2*Math.PI*u2);
+}
+
+function runMC(P, contrib, years, meanPct, stdPct, n){
+  const mean=meanPct/100, std=stdPct/100;
+  const sims = Array.from({length:n},()=>{
+    let v=P; const path=[v];
+    for(let y=0;y<years;y++){ v=Math.max(0,v*(1+randNorm(mean,std))+contrib); path.push(Math.round(v)); }
+    return path;
+  });
+  const pctiles = [5,10,25,50,75,90,95];
+  const byYear = Array.from({length:years+1},(_,y)=>{
+    const vals=sims.map(s=>s[y]).sort((a,b)=>a-b);
+    const obj={};
+    pctiles.forEach(p=>{ obj[p]=vals[Math.max(0,Math.floor(p/100*vals.length)-1)]; });
+    return obj;
+  });
+  return { byYear, finalVals:sims.map(s=>s[years]) };
+}
+
+function MonteCarloPage({ fun }){
+  const [portVal,  setPortVal ] = useState(50000);
+  const [contrib,  setContrib ] = useState(500);
+  const [years,    setYears   ] = useState(30);
+  const [retMean,  setRetMean ] = useState(7);
+  const [retStd,   setRetStd  ] = useState(12);
+  const [withdraw, setWithdraw] = useState(0);
+  const [result,   setResult  ] = useState(null);
+  const [running,  setRunning ] = useState(false);
+  const canvasRef = useRef(null);
+  const sym='£', locale='en-GB';
+  const fmtC = v => sym+Math.round(v).toLocaleString(locale);
+  const fmtK = v => v>=1e6?sym+(v/1e6).toFixed(1)+'M':v>=1000?sym+(v/1000).toFixed(0)+'k':sym+Math.round(v);
+
+  const simulate = useCallback(()=>{
+    setRunning(true);
+    setTimeout(()=>{
+      const r = runMC(portVal, contrib*12, years, retMean, retStd, 500);
+      setResult(r); setRunning(false);
+    },10);
+  },[portVal,contrib,years,retMean,retStd]);
+
+  useEffect(()=>{ simulate(); },[]);
+
+  useEffect(()=>{
+    if(!result||!canvasRef.current) return;
+    const labels = Array.from({length:years+1},(_,i)=>i===0?'Now':`Y${i}`);
+    const thinLine = fun ? 'rgba(0,229,255,0.25)' : 'rgba(26,110,240,0.2)';
+    const midLine  = fun ? 'rgba(0,229,255,0.5)'  : 'rgba(26,110,240,0.45)';
+    const thickLine= fun ? '#00e5ff'               : '#1a6ef0';
+    const fillA    = fun ? 'rgba(0,229,255,0.04)'  : 'rgba(26,110,240,0.04)';
+    const fillB    = fun ? 'rgba(0,229,255,0.08)'  : 'rgba(26,110,240,0.08)';
+
+    const datasets = [
+      {label:'95th',data:result.byYear.map(y=>y[95]),borderColor:thinLine,borderWidth:1,borderDash:[3,3],fill:false,pointRadius:0,tension:0.4},
+      {label:'75th',data:result.byYear.map(y=>y[75]),borderColor:midLine,borderWidth:1,fill:'-1',backgroundColor:fillA,pointRadius:0,tension:0.4},
+      {label:'Median',data:result.byYear.map(y=>y[50]),borderColor:thickLine,borderWidth:2.5,fill:false,pointRadius:0,tension:0.4},
+      {label:'25th',data:result.byYear.map(y=>y[25]),borderColor:midLine,borderWidth:1,fill:'+1',backgroundColor:fillB,pointRadius:0,tension:0.4},
+      {label:'5th',data:result.byYear.map(y=>y[5]),borderColor:thinLine,borderWidth:1,borderDash:[3,3],fill:false,pointRadius:0,tension:0.4},
+    ];
+
+    if(mcChart){ mcChart.data.labels=labels; mcChart.data.datasets=datasets; mcChart.update('none'); }
+    else mcChart=new Chart(canvasRef.current,{
+      type:'line', data:{labels,datasets},
+      options:{responsive:true,maintainAspectRatio:false,animation:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2132',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,titleColor:'rgba(220,228,240,0.5)',bodyColor:'#dce4f0',titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtK(ctx.raw)}`}}},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(220,228,240,0.28)',font:{family:'JetBrains Mono',size:9},autoSkip:true,maxTicksLimit:12},border:{display:false}},
+          y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(220,228,240,0.28)',font:{family:'JetBrains Mono',size:9},callback:v=>fmtK(v)},border:{display:false}},
+        }},
+    });
+  },[result,fun]);
+
+  useEffect(()=>()=>{if(mcChart){mcChart.destroy();mcChart=null;}},[]);
+
+  // Stats
+  const median    = result ? result.byYear[years][50] : 0;
+  const p95       = result ? result.byYear[years][95] : 0;
+  const p5        = result ? result.byYear[years][5]  : 0;
+  const successPct= result
+    ? (withdraw>0
+        ? (result.finalVals.filter(v=>v>portVal*0.5).length/result.finalVals.length*100).toFixed(0)
+        : (result.finalVals.filter(v=>v>portVal+contrib*12*years).length/result.finalVals.length*100).toFixed(0))
+    : 0;
+
+  const SlC = ({ label, min, max, step, value, onChange, display }) => (
+    <div className="ctrl">
+      <div className="ctrl-top"><span className="ctrl-name">{fun?label.toLowerCase():label}</span><span className="ctrl-val">{display}</span></div>
+      <input type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))}/>
+    </div>
+  );
+
+  return(
+    <div className="page">
+      <div className="tool-hero">
+        <div className="tool-hero-left">
+          <div className="tool-hero-tag">{fun?'> monte_carlo.py --runs 500':'🎲 Monte Carlo Simulation'}</div>
+          <h2>{fun?'WILL U RUN OUT OF MONEY?? 😰':'Retirement Survival Simulator'}</h2>
+          <p>{fun?'runs 500 random futures of ur portfolio. some will slap, some will flop. the band in the middle is where u probably land 📊':'Runs 500 simulated market paths to show the range of possible outcomes for your portfolio over time. The band shows the 5th–95th percentile range.'}</p>
+        </div>
+        <div className="mc-stats-grid" style={{flex:'0 0 auto'}}>
+          <div className="stat" style={{minWidth:100}}>
+            <div className="stat-label">{fun?'median W':'Median outcome'}</div>
+            <div className="stat-val">{fmtK(median)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="two-col">
+        <div className="panel">
+          <div className="panel-head"><div className="panel-dot"></div><span className="panel-label">{fun?'⚙️ variables':'Parameters'}</span></div>
+          <SlC label="Starting portfolio"  min={1000}  max={500000} step={1000}  value={portVal}  onChange={setPortVal}  display={'£'+portVal.toLocaleString()}/>
+          <SlC label="Monthly contribution" min={0}    max={5000}   step={50}    value={contrib}  onChange={setContrib}  display={contrib===0?'None':'£'+contrib.toLocaleString()}/>
+          <SlC label="Time horizon (years)" min={5}    max={50}     step={1}     value={years}    onChange={setYears}    display={`${years} yrs`}/>
+          <SlC label="Expected return"      min={1}    max={20}     step={0.5}   value={retMean}  onChange={setRetMean}  display={`${retMean}%`}/>
+          <SlC label="Volatility (std dev)" min={2}    max={35}     step={0.5}   value={retStd}   onChange={setRetStd}   display={`${retStd}%`}/>
+          <button className="add-btn" style={{width:'100%',padding:'10px',fontSize:13,marginTop:8}} onClick={simulate}>
+            {running?(fun?'crunching numbers... ⚙️':'Running 500 simulations...'):(fun?'🎲 run the sims':'▶ Run Simulation')}
+          </button>
+        </div>
+
+        <div className="panel">
+          <div className="panel-head">
+            <div className="panel-dot" style={{background:'var(--green)'}}></div>
+            <span className="panel-label">{fun?'📈 500 futures':'Simulation fan chart'}</span>
+          </div>
+          <div className="mc-stats-grid">
+            <div className="stat accent">
+              <div className="stat-label">{fun?'median':'Median'}</div>
+              <div className="stat-val">{fmtK(median)}</div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">{fun?'best 5%':'95th pct'}</div>
+              <div className="stat-val" style={{fontSize:'clamp(12px,1.8vw,15px)'}}>{fmtK(p95)}</div>
+            </div>
+            <div className="stat">
+              <div className="stat-label">{fun?'worst 5%':'5th pct'}</div>
+              <div className="stat-val" style={{fontSize:'clamp(12px,1.8vw,15px)',color:'var(--amber)'}}>{fmtK(p5)}</div>
+            </div>
+            <div className="stat" style={{textAlign:'center'}}>
+              <div className="stat-label" style={{marginBottom:8}}>{fun?'beating contributions 🏆':'Beat contributions'}</div>
+              <div className="prob-circle" style={{borderColor:Number(successPct)>70?'var(--green)':Number(successPct)>40?'var(--amber)':'var(--red)',color:Number(successPct)>70?'var(--green)':Number(successPct)>40?'var(--amber)':'var(--red)'}}>{successPct}%</div>
+            </div>
+          </div>
+          <div style={{marginBottom:8}}>
+            <div className="legend" style={{gap:12}}>
+              <div className="legend-item"><span style={{width:18,height:2,background:fun?'#00e5ff':'#1a6ef0',display:'inline-block',borderRadius:1}}></span>Median</div>
+              <div className="legend-item"><span style={{width:18,height:2,background:fun?'rgba(0,229,255,0.3)':'rgba(26,110,240,0.3)',display:'inline-block',borderRadius:1}}></span>25–75th pct</div>
+              <div className="legend-item"><span style={{width:18,height:1,background:fun?'rgba(0,229,255,0.2)':'rgba(26,110,240,0.2)',display:'inline-block',borderStyle:'dashed'}}></span>5–95th pct</div>
+            </div>
+          </div>
+          <div className="chart-wrap-lg"><canvas ref={canvasRef}></canvas></div>
+        </div>
+      </div>
+
+      {result&&<div className="panel">
+        <div className="panel-head"><div className="panel-dot" style={{background:'var(--purple)'}}></div><span className="panel-label">{fun?'📋 the breakdown':'Percentile breakdown'}</span></div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:10}}>
+          {[5,10,25,50,75,90,95].map(p=>{
+            const v=result.byYear[years][p];
+            const isGood=p>=50, isGreat=p>=75;
+            return <div key={p} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 14px',background:'var(--surface2)',border:'1px solid var(--border)',borderRadius:'var(--radius)'}}>
+              <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:11,color:'var(--text-3)'}}>P{p} {p===50?'(median)':p<=10?'(bad luck)':p>=90?'(lucky)':''}</span>
+              <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:13,fontWeight:500,color:isGreat?'var(--green)':isGood?'var(--text)':'var(--amber)'}}>{fmtC(v)}</span>
+            </div>;
+          })}
+        </div>
+      </div>}
+
+      <div className="footer-bar">
+        <p className="footer-note"><strong>{fun?'Not financial advice (obviously 🙄).':'Not financial advice.'}</strong>{' '}{fun?'these are random math simulations not prophecy. the future is vibes-based 🎲':'Monte Carlo simulations use random sampling and historical volatility assumptions. Actual returns will vary.'}</p>
+        <div className="footer-brand">InvestIQ · <span>{fun?'v2.0 🤓':'v2.0'}</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* ═════════════════════════════════════════
+   FEE & TAX OPTIMIZER PAGE
+═════════════════════════════════════════ */
+let feeChart=null, taxChart=null;
+
+const FEE_TIERS = [
+  {name:'Passive ETF', label:'e.g. VWRP', fee:0.07, cls:'best'},
+  {name:'Active ETF',  label:'e.g. ARK',  fee:0.50, cls:''},
+  {name:'Managed Fund',label:'typical',   fee:1.00, cls:''},
+  {name:'High-cost',   label:'worst case',fee:1.75, cls:'worst'},
+];
+
+function computeFeeSchedule(P, contrib, years, grossReturn, feePct){
+  const netR = (grossReturn-feePct)/100;
+  let v=P; const vals=[v];
+  for(let y=0;y<years;y++){ v=v*(1+netR)+contrib*12; vals.push(Math.round(Math.max(0,v))); }
+  return vals;
+}
+
+function FeeTaxPage({ fun }){
+  const [tab,      setTab     ] = useState('fee');
+  const [portVal,  setPortVal ] = useState(20000);
+  const [contrib,  setContrib ] = useState(300);
+  const [years,    setYears   ] = useState(25);
+  const [grossRet, setGrossRet] = useState(8);
+  // tax tab
+  const [taxPortVal,  setTaxPortVal ] = useState(20000);
+  const [taxContrib,  setTaxContrib ] = useState(300);
+  const [taxYears,    setTaxYears   ] = useState(25);
+  const [taxReturn,   setTaxReturn  ] = useState(8);
+  const feeCanvasRef = useRef(null);
+  const taxCanvasRef = useRef(null);
+  const sym='£', locale='en-GB';
+  const fmtK = v => v>=1e6?sym+(v/1e6).toFixed(1)+'M':v>=1000?sym+(v/1000).toFixed(0)+'k':sym+Math.round(v);
+  const fmtC = v => sym+Math.round(v).toLocaleString(locale);
+
+  // Fee schedules
+  const schedules  = FEE_TIERS.map(t=>computeFeeSchedule(portVal,contrib,years,grossRet,t.fee));
+  const finalVals  = schedules.map(s=>s[years]);
+  const bestVal    = finalVals[0];
+
+  // Tax schedules: ISA (no tax) vs GIA (20% CGT on gains, 8.75% dividend tax)
+  const r = taxReturn/100;
+  const buildIsaSchedule = ()=>{
+    let v=taxPortVal; const vals=[v];
+    for(let y=0;y<taxYears;y++){ v=v*(1+r)+taxContrib*12; vals.push(Math.round(Math.max(0,v))); }
+    return vals;
+  };
+  const buildGiaSchedule = ()=>{
+    let v=taxPortVal; const vals=[v];
+    for(let y=0;y<taxYears;y++){
+      const gain = v*r*0.8 + taxContrib*12; // rough: 20% CGT drag on gains + full dividend tax drag
+      v=v+gain; vals.push(Math.round(Math.max(0,v)));
+    }
+    return vals;
+  };
+  const isaVals = buildIsaSchedule();
+  const giaVals = buildGiaSchedule();
+  const taxSaving = isaVals[taxYears]-giaVals[taxYears];
+
+  const labels = Array.from({length:years+1},(_,i)=>i===0?'Now':`Y${i}`);
+  const taxLabels = Array.from({length:taxYears+1},(_,i)=>i===0?'Now':`Y${i}`);
+
+  useEffect(()=>{
+    if(tab!=='fee'||!feeCanvasRef.current) return;
+    const colors = [fun?'#39ff14':'#16c784','#1a6ef0','#f59e0b',fun?'#ff006e':'#e5392b'];
+    const datasets = FEE_TIERS.map((t,i)=>({
+      label:`${t.name} (${t.fee}%)`,data:schedules[i],
+      borderColor:colors[i],borderWidth:i===0?2.5:1.5,
+      fill:false,pointRadius:0,tension:0.4,
+      borderDash:i>1?[4,3]:[],
+    }));
+    if(feeChart){ feeChart.data.labels=labels; feeChart.data.datasets=datasets; feeChart.update('none'); }
+    else feeChart=new Chart(feeCanvasRef.current,{
+      type:'line',data:{labels,datasets},
+      options:{responsive:true,maintainAspectRatio:false,animation:false,
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2132',titleColor:'rgba(220,228,240,0.5)',bodyColor:'#dce4f0',titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtK(ctx.raw)}`}}},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(220,228,240,0.28)',font:{family:'JetBrains Mono',size:9},autoSkip:true,maxTicksLimit:12},border:{display:false}},
+          y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(220,228,240,0.28)',font:{family:'JetBrains Mono',size:9},callback:v=>fmtK(v)},border:{display:false}},
+        }},
+    });
+  },[tab,portVal,contrib,years,grossRet,fun]);
+
+  useEffect(()=>{
+    if(tab!=='tax'||!taxCanvasRef.current) return;
+    const datasets = [
+      {label:'ISA (0% tax)',data:isaVals,borderColor:fun?'#39ff14':'#16c784',borderWidth:2.5,fill:false,pointRadius:0,tension:0.4},
+      {label:'GIA (taxable)',data:giaVals,borderColor:fun?'#ff006e':'#e5392b',borderWidth:1.5,fill:false,pointRadius:0,tension:0.4,borderDash:[4,3]},
+    ];
+    if(taxChart){ taxChart.data.labels=taxLabels; taxChart.data.datasets=datasets; taxChart.update('none'); }
+    else taxChart=new Chart(taxCanvasRef.current,{
+      type:'line',data:{labels:taxLabels,datasets},
+      options:{responsive:true,maintainAspectRatio:false,animation:false,
+        plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2132',titleColor:'rgba(220,228,240,0.5)',bodyColor:'#dce4f0',titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:11},callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmtK(ctx.raw)}`}}},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(220,228,240,0.28)',font:{family:'JetBrains Mono',size:9},autoSkip:true,maxTicksLimit:12},border:{display:false}},
+          y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(220,228,240,0.28)',font:{family:'JetBrains Mono',size:9},callback:v=>fmtK(v)},border:{display:false}},
+        }},
+    });
+  },[tab,taxPortVal,taxContrib,taxYears,taxReturn,fun]);
+
+  useEffect(()=>()=>{[feeChart,taxChart].forEach(c=>{if(c)c.destroy()});feeChart=null;taxChart=null;},[]);
+  useEffect(()=>{if(feeChart){feeChart.destroy();feeChart=null;} if(taxChart){taxChart.destroy();taxChart=null;}},[tab]);
+
+  const SlC=({label,min,max,step,value,onChange,display})=>(
+    <div className="ctrl">
+      <div className="ctrl-top"><span className="ctrl-name">{fun?label.toLowerCase():label}</span><span className="ctrl-val">{display}</span></div>
+      <input type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))}/>
+    </div>
+  );
+
+  return(
+    <div className="page">
+      <div className="tool-hero">
+        <div className="tool-hero-left">
+          <div className="tool-hero-tag">{fun?'> fees_are_evil.sh --expose':'💸 Fee & Tax Optimizer'}</div>
+          <h2>{fun?'HIDDEN COSTS R ROBBING U 🚨':'Fee & Tax Impact Calculator'}</h2>
+          <p>{fun?'a 1% fee sounds tiny but over 30 years it literally eats ur lambo 🏎️. and taxes outside an ISA? don\'t even start':'Fees and taxes are the invisible drag on your portfolio. See exactly how much they cost over your investment horizon — and how much you could save.'}</p>
+        </div>
+      </div>
+
+      <div className="tab-strip">
+        <button className={`tab-strip-btn${tab==='fee'?' active':''}`} onClick={()=>setTab('fee')}>{fun?'💸 fee theft':'Fee Impact'}</button>
+        <button className={`tab-strip-btn${tab==='tax'?' active':''}`} onClick={()=>setTab('tax')}>{fun?'🏛️ tax drain':'ISA vs Taxable'}</button>
+      </div>
+
+      {tab==='fee'&&<>
+        <div className="two-col">
+          <div className="panel">
+            <div className="panel-head"><div className="panel-dot"></div><span className="panel-label">{fun?'⚙️ settings':'Parameters'}</span></div>
+            <SlC label="Starting value"      min={1000}  max={200000} step={500}  value={portVal}  onChange={setPortVal}  display={fmtC(portVal)}/>
+            <SlC label="Monthly contribution" min={0}    max={3000}   step={50}   value={contrib}  onChange={setContrib}  display={contrib===0?'None':'£'+contrib}/>
+            <SlC label="Time horizon"         min={5}    max={40}     step={1}    value={years}    onChange={setYears}    display={`${years} yrs`}/>
+            <SlC label="Gross annual return"  min={2}    max={20}     step={0.5}  value={grossRet} onChange={setGrossRet} display={`${grossRet}%`}/>
+          </div>
+          <div className="panel">
+            <div className="panel-head"><div className="panel-dot" style={{background:'var(--green)'}}></div><span className="panel-label">{fun?'💀 fee damage':'After-fee outcomes'}</span></div>
+            <div className="four-col">
+              {FEE_TIERS.map((t,i)=>(
+                <div className={`fee-card${t.cls?' '+t.cls:''}`} key={t.name}>
+                  <div className="fee-card-name">{t.name}</div>
+                  <div className="fee-card-pct">{t.fee}% / yr · {t.label}</div>
+                  <div className="fee-card-val">{fmtK(finalVals[i])}</div>
+                  {i>0&&<div className="fee-card-loss">-{fmtK(bestVal-finalVals[i])} vs passive</div>}
+                  {i===0&&<div className="fee-card-loss" style={{color:'var(--green)'}}>← optimal</div>}
+                </div>
+              ))}
+            </div>
+            <div className="chart-wrap-lg"><canvas ref={feeCanvasRef}></canvas></div>
+            <div className="legend" style={{marginTop:8}}>
+              {FEE_TIERS.map((t,i)=>{
+                const colors=[fun?'#39ff14':'#16c784','#1a6ef0','#f59e0b',fun?'#ff006e':'#e5392b'];
+                return <div className="legend-item" key={t.name}><span className="legend-sq" style={{background:colors[i]}}></span>{t.fee}%</div>;
+              })}
+            </div>
+          </div>
+        </div>
+        {bestVal-finalVals[3]>0&&<div className="warn-box">
+          <span className="warn-icon">💡</span>
+          <span style={{color:'var(--amber)'}}>
+            {fun
+              ?`switching from 1.75% to 0.07% saves u ${fmtK(bestVal-finalVals[3])} over ${years} years. that's literally a deposit on a flat 🏠`
+              :`Switching from a 1.75% fund to a 0.07% passive ETF saves ${fmtK(bestVal-finalVals[3])} over ${years} years — on the same gross market return.`}
+          </span>
+        </div>}
+      </>}
+
+      {tab==='tax'&&<>
+        <div className="two-col">
+          <div className="panel">
+            <div className="panel-head"><div className="panel-dot"></div><span className="panel-label">{fun?'⚙️ settings':'Parameters'}</span></div>
+            <SlC label="Starting value"       min={1000}  max={200000} step={500} value={taxPortVal}  onChange={setTaxPortVal}  display={fmtC(taxPortVal)}/>
+            <SlC label="Monthly contribution" min={0}     max={3000}   step={50}  value={taxContrib}  onChange={setTaxContrib}  display={taxContrib===0?'None':'£'+taxContrib}/>
+            <SlC label="Time horizon"         min={5}     max={40}     step={1}   value={taxYears}    onChange={setTaxYears}    display={`${taxYears} yrs`}/>
+            <SlC label="Annual return"        min={2}     max={20}     step={0.5} value={taxReturn}   onChange={setTaxReturn}   display={`${taxReturn}%`}/>
+            <div style={{marginTop:8,padding:'10px 12px',background:'var(--surface2)',border:'1px solid var(--border)',borderRadius:'var(--radius)',fontSize:12,color:'var(--text-2)',lineHeight:1.6}}>
+              {fun?'📌 assumes ~20% tax drag on GIA gains (CGT + dividend tax) vs 0% inside ISA. actual tax depends on ur situation':'Assumes ~20% effective tax drag on GIA returns (CGT + dividend tax). ISA returns are completely tax-free. Consult an adviser for your situation.'}
+            </div>
+          </div>
+          <div className="panel">
+            <div className="panel-head"><div className="panel-dot" style={{background:'var(--green)'}}></div><span className="panel-label">{fun?'🛡️ isa vs taxable':'ISA vs GIA'}</span></div>
+            <div className="stats" style={{marginBottom:14}}>
+              <div className="stat accent">
+                <div className="stat-label">{fun?'ISA value 🛡️':'ISA final value'}</div>
+                <div className="stat-val">{fmtK(isaVals[taxYears])}</div>
+              </div>
+              <div className="stat">
+                <div className="stat-label">{fun?'taxable 😓':'GIA final value'}</div>
+                <div className="stat-val" style={{color:'var(--amber)'}}>{fmtK(giaVals[taxYears])}</div>
+              </div>
+              <div className="stat" style={{borderColor:'var(--green-mid)',background:'var(--green-dim)'}}>
+                <div className="stat-label" style={{color:'rgba(22,199,132,0.6)'}}>{fun?'tax saved 🤑':'Tax shelter benefit'}</div>
+                <div className="stat-val" style={{color:'var(--green)'}}>{fmtK(taxSaving)}</div>
+              </div>
+            </div>
+            <div className="chart-wrap-lg"><canvas ref={taxCanvasRef}></canvas></div>
+            <div className="legend" style={{marginTop:8}}>
+              <div className="legend-item"><span className="legend-sq" style={{background:fun?'#39ff14':'#16c784'}}></span>ISA (0% tax)</div>
+              <div className="legend-item"><span className="legend-sq" style={{background:fun?'#ff006e':'#e5392b'}}></span>GIA (taxable)</div>
+            </div>
+          </div>
+        </div>
+        <div className="warn-box" style={{borderColor:'var(--green-mid)',background:'var(--green-dim)'}}>
+          <span className="warn-icon">✅</span>
+          <span style={{color:'var(--green)'}}>
+            {fun
+              ?`bro just use ur ISA allowance (£20k/yr). it's literally free money from the government ✂️ taxes`
+              :`Max your ISA allowance (£20,000/year) before investing in a taxable account. The tax shelter benefit compounds powerfully over time.`}
+          </span>
+        </div>
+      </>}
+
+      <div className="footer-bar">
+        <p className="footer-note"><strong>{fun?'Not financial advice bb 💅.':'Not financial advice.'}</strong>{' '}{fun?'tax rules change. uk only. don\'t sue us 🫶':'Fee and tax calculations are illustrative. Tax treatment depends on individual circumstances. UK-focused assumptions.'}</p>
+        <div className="footer-brand">InvestIQ · <span>{fun?'v2.0 🤓':'v2.0'}</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   APP
+───────────────────────────────────────── */
+const PAGES = [
+  { key:'tools', label:'Tools', funLabel:'🕹️ Tools',
+    items:[
+      {key:'calculator', icon:'📊',label:'Investment Calculator',   sub:'Compound return projector',        bg:'var(--blue-dim)'  },
+      {key:'portfolio',  icon:'🗂️',label:'Portfolio Analyzer',      sub:'Allocation, sectors & health',     bg:'var(--green-dim)' },
+      {key:'montecarlo', icon:'🎲',label:'Monte Carlo Simulator',   sub:'500 simulated market paths',       bg:'var(--amber-dim)' },
+      {key:'feetax',     icon:'💸',label:'Fee & Tax Optimizer',     sub:'Hidden costs & ISA vs GIA',        bg:'var(--purple-dim)'},
+    ] },
+  { key:'education', label:'Education', funLabel:'🧠 Learn',
+    items:[{key:'education',icon:'📚',label:'Investor Education',sub:'L100 → L400 learning path',bg:'var(--green-dim)'}] },
+];
+
+function App(){
+  const [page,  setPage]  = useState('calculator');
+  const [theme, setTheme] = useState('dark');
+  const [fun,   setFun]   = useState(false);
+  const [open,  setOpen]  = useState(null);
+
+  const toggleTheme = ()=>{
+    const next = theme==='dark'?'light':'dark';
+    setTheme(next);
+    document.documentElement.setAttribute('data-theme', next);
+    if(fun) document.documentElement.setAttribute('data-fun','true'); // keep fun override
+  };
+
+  const toggleFun = ()=>{
+    const next = !fun;
+    setFun(next);
+    document.documentElement.setAttribute('data-fun', next?'true':'false');
+    if(next) document.documentElement.setAttribute('data-theme','dark');
+    else      document.documentElement.setAttribute('data-theme', theme);
+    if(chartInst){ chartInst.destroy(); chartInst=null; }
+    if(mcChart){ mcChart.destroy(); mcChart=null; }
+    if(feeChart){ feeChart.destroy(); feeChart=null; }
+    if(taxChart){ taxChart.destroy(); taxChart=null; }
+    Object.values(portCharts).forEach(c=>c.destroy()); portCharts={};
+  };
+
+  const navigate = key=>{
+    setPage(key); setOpen(null);
+    if(key!=='calculator'&&chartInst){chartInst.destroy();chartInst=null;}
+  };
+
+  useEffect(()=>{
+    const h=()=>setOpen(null);
+    document.addEventListener('click',h);
+    return()=>document.removeEventListener('click',h);
+  },[]);
+
+  return(
+    <>
+      <FunFloaters fun={fun}/>
+
+      {/* NAV */}
+      <nav className="nav">
+        <a className="nav-brand" href="#" onClick={e=>{e.preventDefault();navigate('calculator');}}>
+          <div className="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 9-9v3.5l-9 9-4-4-5 5V17z"/></svg>
+          </div>
+          <span className="nav-brand-name">{fun?'INVESTIQ.EXE':'InvestIQ'}</span>
+        </a>
+
+        <div className="nav-menu" onClick={e=>e.stopPropagation()}>
+          {PAGES.map(pg=>(
+            <div className="nav-item" key={pg.key}>
+              <button
+                className={`nav-btn${pg.items.some(i=>i.key===page)?' active':''}${open===pg.key?' open':''}`}
+                onClick={()=>setOpen(open===pg.key?null:pg.key)}
+              >
+                {fun?pg.funLabel:pg.label}
+                <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M1 1l4 4 4-4"/>
+                </svg>
+              </button>
+              <div className={`dropdown${open===pg.key?' open':''}`}>
+                {pg.items.map(item=>(
+                  <div key={item.key} className={`dropdown-item${page===item.key?' active':''}`}
+                    onClick={()=>navigate(item.key)}>
+                    <div className="di-icon" style={{background:item.bg,fontSize:15}}>{item.icon}</div>
+                    <div><div className="di-label">{item.label}</div><div className="di-sub">{item.sub}</div></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="nav-right">
+          {/* Theme toggle */}
+          <button className="icon-btn" onClick={toggleTheme} title="Toggle theme" style={{display:fun?'none':'flex'}}>
+            {theme==='dark'
+              ?<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+              :<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="2" fill="none"/></svg>
+            }
+          </button>
+
+          {/* Fun toggle */}
+          <button
+            className={`icon-btn fun-toggle-btn${fun?' fun-on':''}`}
+            onClick={toggleFun}
+            title={fun?'turn off chaotic energy':'activate CHAOS MODE 🤓'}
+          >
+            🤓
+          </button>
+        </div>
+      </nav>
+
+      {/* Fun ticker tape */}
+      {fun && <FunTape/>}
+
+      {/* Pages */}
+      {page==='calculator' && <CalculatorPage fun={fun}/>}
+      {page==='portfolio'  && <PortfolioPage  fun={fun}/>}
+      {page==='montecarlo' && <MonteCarloPage fun={fun}/>}
+      {page==='feetax'     && <FeeTaxPage     fun={fun}/>}
+      {page==='education'  && <EducationPage  fun={fun}/>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
